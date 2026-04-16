@@ -1,35 +1,98 @@
-import { Home, FolderHeart, Settings, Gamepad2 } from "lucide-react";
+import { FolderHeart } from "lucide-react";
+import TempIcon from "../assets/TempIcon.png";
 
+function NavButton({
+  icon: Icon,
+  isActive = false,
+}: {
+  icon: any;
+  isActive?: boolean;
+}) {
+  return (
+    <button
+      className={`
+        w-full aspect-square flex items-center justify-center rounded-xl transition-all duration-300
+        hover:scale-110 hover:bg-slate-300/50 hover:shadow-md
+        ${
+          isActive
+            ? "bg-slate-300/60 text-slate-800 shadow-sm border border-white/20"
+            : "text-slate-600 border border-transparent"
+        }
+      `}
+    >
+      <Icon size={24} strokeWidth={1.5} />
+    </button>
+  );
+}
+
+/// 侧边栏主组件
 export function Sidebar() {
   return (
     <aside
-      className="fixed left-0 top-0 h-screen w-[72px] flex flex-col items-center py-6 gap-8 z-50
-                 bg-gradient-to-b from-slate-200/40 to-slate-100/10 
-                 backdrop-blur-md border-r border-white/20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]"
+      style={{
+        position: "fixed",
+        left: 0,
+        top: 0,
+        height: "100vh",
+        width: "4.8rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: "1.5rem",
+        paddingBottom: "1.5rem",
+        gap: "2rem",
+        zIndex: 40,
+        background:
+          "linear-gradient(to right, rgba(18, 18, 18, 0.8) 0%, rgba(18, 18, 18, 0.8))",
+        backdropFilter: "blur(12px)", // 对应 backdrop-blur-md
+        WebkitBackdropFilter: "blur(12px)", // 兼容 Safari
+        borderRightWidth: 0,
+      }}
     >
       {/* 顶部 Logo 区域 */}
-      <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/40 shadow-sm border border-white/30 text-slate-700">
-        <Gamepad2 size={28} strokeWidth={1.5} />
+      <div
+        style={{
+          width: "3rem",
+          height: "3rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "0.75rem",
+          backgroundColor: "rgba(203, 213, 225, 0.3)",
+          boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "rgba(255, 255, 255, 0.2)",
+          overflow: "hidden",
+        }}
+      >
+        <img
+          src={TempIcon}
+          alt="Logo"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transitionProperty: "all",
+            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            transitionDuration: "300ms",
+          }}
+        />
       </div>
 
-      {/* 中间导航图标 */}
-      <nav className="flex flex-col gap-4 mt-4 w-full px-3">
-        {/* 激活状态的按钮 (比如当前在主页) */}
-        <button className="w-full aspect-square flex items-center justify-center rounded-xl bg-white/50 text-slate-800 shadow-sm border border-white/40 transition-all hover:bg-white/60">
-          <Home size={24} strokeWidth={1.5} />
-        </button>
-
-        {/* 未激活状态的按钮 */}
-        <button className="w-full aspect-square flex items-center justify-center rounded-xl text-slate-500 hover:bg-white/30 hover:text-slate-700 transition-all">
-          <FolderHeart size={24} strokeWidth={1.5} />
-        </button>
-
-        {/* 假设这是设置按钮，放在底部 */}
-        <div className="mt-auto pt-4 flex w-full">
-          <button className="w-full aspect-square flex items-center justify-center rounded-xl text-slate-500 hover:bg-white/30 hover:text-slate-700 transition-all">
-            <Settings size={24} strokeWidth={1.5} />
-          </button>
-        </div>
+      {/* 导航图标区域 */}
+      <nav
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          marginTop: "1rem",
+          width: "100%",
+          paddingLeft: "0.75rem",
+          paddingRight: "0.75rem",
+        }}
+      >
+        <NavButton icon={FolderHeart} isActive={true} />
       </nav>
     </aside>
   );
