@@ -27,6 +27,7 @@ function NavButton({
             : "text-slate-600 border border-transparent"
         }
       `}
+      style={{}}
     >
       <Icon size={24} strokeWidth={1.5} />
     </button>
@@ -47,9 +48,9 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        paddingTop: "1.5rem",
+        paddingTop: "1rem",
         paddingBottom: "1.5rem",
-        gap: "0.8rem",
+        gap: "0.6rem",
         zIndex: 40,
         background: "rgba(18, 18, 18, 0.3)",
         backdropFilter: "blur(12px)",
@@ -62,15 +63,13 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
           width: "3rem",
           height: "3rem",
           display: "flex",
-          alignItems: "center",
           justifyContent: "center",
           borderRadius: "2rem",
           backgroundColor: "rgba(203, 213, 225, 0.3)",
-          boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
           borderWidth: "1px",
           borderStyle: "solid",
-          borderColor: "rgba(255, 255, 255, 0.2)",
           overflow: "hidden",
+          position: "relative",
         }}
       >
         {isHome ? (
@@ -96,7 +95,6 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
       <nav
         style={{
           display: "flex",
-          flexDirection: "column",
           gap: "1rem",
           marginTop: "1rem",
           width: "100%",
@@ -114,7 +112,6 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
       <nav
         style={{
           display: "flex",
-          flexDirection: "column",
           gap: "1rem",
           marginTop: "1rem",
           width: "100%",

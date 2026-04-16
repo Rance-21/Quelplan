@@ -5,9 +5,9 @@ import { Sidebar } from "./components/SideBar";
 import { Topbar } from "./layouts/TopBar";
 import Background from "./assets/Background.jpg";
 import { useState } from "react";
-import { MainPage } from "./MainPage/MainPage";
-import { FolderPage } from "./FolderPage/Folder";
-import { SettingsPage } from "./SettingsPage/Settings";
+import { MainPage } from "./Pages/MainPage/MainPage";
+import { FolderPage } from "./Pages/FolderPage/Folder";
+import { SettingsPage } from "./Pages/SettingsPage/Settings";
 import "./App.css";
 
 export default function App() {
