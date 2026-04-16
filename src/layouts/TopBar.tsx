@@ -21,14 +21,14 @@ function WindowButton({
       onMouseLeave={() => setIsHovered(false)}
       style={{
         height: "100%",
-        padding: "0 1.25rem", // 20px
+        padding: "0 1.1rem", // 20px
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         border: "none",
         outline: "none",
         cursor: "default",
-        borderRadius: "1.1rem", // 4px
+        borderRadius: "1.5rem",
         // 核心：根据 isHovered 动态切换颜色
         backgroundColor: isHovered ? "rgba(82, 211, 211, 0.5)" : "transparent",
         color: isHovered ? "#ffffff" : "#94a3b8", // slate-400 (#94a3b8) 变纯白

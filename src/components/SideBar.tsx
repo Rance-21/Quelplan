@@ -1,15 +1,23 @@
-import { FolderHeart } from "lucide-react";
+import { FolderHeart, Settings, Undo2 } from "lucide-react";
 import TempIcon from "../assets/TempIcon.png";
+
+export interface SidebarProps {
+  activeMenu: string;
+  onMenuClick: (menuName: string) => void;
+}
 
 function NavButton({
   icon: Icon,
   isActive = false,
+  onClick,
 }: {
   icon: any;
   isActive?: boolean;
+  onClick: () => void;
 }) {
   return (
     <button
+      onClick={onClick}
       className={`
         w-full aspect-square flex items-center justify-center rounded-xl transition-all duration-300
         hover:scale-110 hover:bg-slate-300/50 hover:shadow-md
@@ -26,11 +34,12 @@ function NavButton({
 }
 
 /// 侧边栏主组件
-export function Sidebar() {
+export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
+  const isHome = activeMenu === "Home";
   return (
     <aside
       style={{
-        position: "fixed",
+        position: "absolute",
         left: 0,
         top: 0,
         height: "100vh",
@@ -40,12 +49,10 @@ export function Sidebar() {
         alignItems: "center",
         paddingTop: "1.5rem",
         paddingBottom: "1.5rem",
-        gap: "2rem",
+        gap: "0.8rem",
         zIndex: 40,
-        background:
-          "linear-gradient(to right, rgba(18, 18, 18, 0.8) 0%, rgba(18, 18, 18, 0.8))",
-        backdropFilter: "blur(12px)", // 对应 backdrop-blur-md
-        WebkitBackdropFilter: "blur(12px)", // 兼容 Safari
+        background: "rgba(18, 18, 18, 0.3)",
+        backdropFilter: "blur(12px)",
         borderRightWidth: 0,
       }}
     >
@@ -57,7 +64,7 @@ export function Sidebar() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: "0.75rem",
+          borderRadius: "2rem",
           backgroundColor: "rgba(203, 213, 225, 0.3)",
           boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
           borderWidth: "1px",
@@ -66,18 +73,23 @@ export function Sidebar() {
           overflow: "hidden",
         }}
       >
-        <img
-          src={TempIcon}
-          alt="Logo"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transitionProperty: "all",
-            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-            transitionDuration: "300ms",
-          }}
-        />
+        {isHome ? (
+          <img
+            src={TempIcon}
+            alt="Logo"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <NavButton
+            icon={Undo2}
+            isActive={true}
+            onClick={() => onMenuClick("Home")}
+          />
+        )}
       </div>
 
       {/* 导航图标区域 */}
@@ -92,7 +104,29 @@ export function Sidebar() {
           paddingRight: "0.75rem",
         }}
       >
-        <NavButton icon={FolderHeart} isActive={true} />
+        <NavButton
+          icon={FolderHeart}
+          isActive={true}
+          onClick={() => onMenuClick("Folder")}
+        />
+      </nav>
+
+      <nav
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          marginTop: "1rem",
+          width: "100%",
+          paddingLeft: "0.75rem",
+          paddingRight: "0.75rem",
+        }}
+      >
+        <NavButton
+          icon={Settings}
+          isActive={true}
+          onClick={() => onMenuClick("Settings")}
+        />
       </nav>
     </aside>
   );
