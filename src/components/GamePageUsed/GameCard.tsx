@@ -3,9 +3,11 @@ import { useState } from "react";
 export function GameCard({
   title,
   coverUrl,
+  onClick,
 }: {
   title: string;
   coverUrl: string;
+  onClick: () => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -13,6 +15,7 @@ export function GameCard({
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
       style={{
         width: isHovered ? "85%" : "80%",
         aspectRatio: "3 / 4",

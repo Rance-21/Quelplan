@@ -140,3 +140,34 @@
     @apply font-sans;
     }
 }
+
+/* 定义从中心扩散的动画 */
+@keyframes centerReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-reveal {
+  animation: centerReveal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes limeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* 缩短位移距离，更省性能 */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-lime {
+  animation: limeFadeIn 0.25s ease-out forwards;
+}

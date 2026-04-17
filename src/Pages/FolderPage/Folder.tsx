@@ -1,33 +1,37 @@
 import { GameGrid } from "../../components/GamePageUsed/GameGird";
 
-export function FolderPage() {
+export function FolderPage({
+  onGameSelect,
+}: {
+  onGameSelect: (id: number) => void;
+}) {
   const mockGames = [
     {
-      id: "1",
+      id: 1,
       title: "赛博朋克 2077",
       coverUrl:
         "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=600&auto=format&fit=crop",
     },
     {
-      id: "2",
+      id: 2,
       title: "艾尔登法环",
       coverUrl:
         "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=600&auto=format&fit=crop",
     },
     {
-      id: "3",
+      id: 3,
       title: "荒野大镖客 2",
       coverUrl:
         "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
     },
     {
-      id: "4",
+      id: 4,
       title: "塞尔达传说",
       coverUrl:
         "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?q=80&w=600&auto=format&fit=crop",
     },
     {
-      id: "5",
+      id: 5,
       title: "巫师 3",
       coverUrl:
         "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=600&auto=format&fit=crop",
@@ -44,6 +48,7 @@ export function FolderPage() {
         flexDirection: "column",
         paddingTop: "3.4rem",
         paddingLeft: "4.8rem",
+        backdropFilter: "blur(2.6px)",
         boxSizing: "border-box",
       }}
     >
@@ -78,6 +83,7 @@ export function FolderPage() {
             ...mockGames,
             ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
           ]}
+          onGameSelect={onGameSelect}
         />
       </div>
     </div>

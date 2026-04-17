@@ -1,6 +1,12 @@
 import { GameCard } from "./GameCard";
 
-export function GameGrid({ games }: { games: any[] }) {
+export function GameGrid({
+  games,
+  onGameSelect,
+}: {
+  games: any[];
+  onGameSelect: (id: number) => void;
+}) {
   return (
     <div
       style={{
@@ -11,7 +17,13 @@ export function GameGrid({ games }: { games: any[] }) {
       }}
     >
       {games.map((game) => (
-        <GameCard key={game.id} title={game.title} coverUrl={game.coverUrl} />
+        <div key={game.id} className="animate-lime" style={{}}>
+          <GameCard
+            title={game.title}
+            coverUrl={game.coverUrl}
+            onClick={() => onGameSelect(game.id)}
+          />
+        </div>
       ))}
     </div>
   );

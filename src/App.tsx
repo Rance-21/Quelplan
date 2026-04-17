@@ -12,6 +12,7 @@ import "./App.css";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState("Home");
+  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
   return (
     <div
       style={{
@@ -39,9 +40,9 @@ export default function App() {
           alt="Loading"
           style={{
             objectFit: "cover",
-            backgroundSize: "cover", // 自动等比缩放，直到铺满整个容器（会裁剪多余部分）
-            backgroundPosition: "center", // 裁剪时以图片中心为基准，防止人物/主体的脸被切掉
-            backgroundRepeat: "no-repeat", // 防止图片太小时重复平铺
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         />
       </div>
@@ -54,7 +55,14 @@ export default function App() {
         {/* 动态渲染：哪个名字被激活，就渲染哪个组件 */}
         {currentPage === "Home" && <MainPage />}
 
-        {currentPage === "Folder" && <FolderPage />}
+        {currentPage === "Folder" && (
+          <FolderPage
+            onGameSelect={(id) => {
+              setSelectedGameId(id);
+              setCurrentPage("Home");
+            }}
+          />
+        )}
 
         {currentPage === "Settings" && <SettingsPage />}
       </main>

@@ -19,6 +19,7 @@ function NavButton({
     <button
       onClick={onClick}
       className={`
+        animate-reveal
         w-full aspect-square flex items-center justify-center rounded-xl transition-all duration-300
         hover:scale-110 hover:bg-slate-300/50 hover:shadow-md
         ${
@@ -27,7 +28,6 @@ function NavButton({
             : "text-slate-600 border border-transparent"
         }
       `}
-      style={{}}
     >
       <Icon size={24} strokeWidth={1.5} />
     </button>
@@ -69,26 +69,43 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
           borderWidth: "1px",
           borderStyle: "solid",
           overflow: "hidden",
-          position: "relative",
+          position: "relative", // 👈 重点：保持 relative，让里面的东西可以绝对定位
         }}
       >
-        {isHome ? (
-          <img
-            src={TempIcon}
-            alt="Logo"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        ) : (
+        {/* 1. Logo图片永远存在。如果是主页就显示，不是就变透明且缩小 */}
+        <img
+          src={TempIcon}
+          alt="Logo"
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+            opacity: isHome ? 1 : 0,
+            transform: isHome ? "scale(1)" : "scale(0.3)",
+            pointerEvents: isHome ? "auto" : "none", // 隐藏时让鼠标穿透，防止误触
+          }}
+        />
+
+        {/* 2. 返回按钮也永远存在，逻辑和上面刚好相反 */}
+        <div
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+            opacity: !isHome ? 1 : 0,
+            transform: !isHome ? "scale(1)" : "scale(0.3)",
+            pointerEvents: !isHome ? "auto" : "none",
+          }}
+        >
           <NavButton
             icon={Undo2}
-            isActive={true}
+            isActive={false}
             onClick={() => onMenuClick("Home")}
           />
-        )}
+        </div>
       </div>
 
       {/* 导航图标区域 */}
