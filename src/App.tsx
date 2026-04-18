@@ -46,11 +46,12 @@ export default function App() {
           }}
         />
       </div>
+      <Topbar />
       <Sidebar
         activeMenu={currentPage}
         onMenuClick={(menuName) => setCurrentPage(menuName)}
       />
-      <Topbar />
+
       <main>
         {/* 动态渲染：哪个名字被激活，就渲染哪个组件 */}
         {currentPage === "Home" && <MainPage />}

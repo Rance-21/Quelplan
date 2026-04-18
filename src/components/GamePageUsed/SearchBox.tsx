@@ -17,7 +17,7 @@ export function SearchBox({ onSearch }: SearchBoxProps) {
         border: "0.2rem solid rgba(147, 197, 253, 0.4)",
         boxShadow: "0 0.25rem 0.75rem rgba(0, 0, 0, 0.1)",
       }}
-      className="no-drag"
+      data-tauri-drag-region="false"
     >
       {/* 1. 左侧：搜索小图标 */}
       <Search

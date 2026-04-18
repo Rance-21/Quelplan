@@ -37,7 +37,7 @@ export function SortButton({
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
       style={{ position: "relative", zIndex: 50 }}
-      className="no-drag"
+      data-tauri-drag-region="false"
     >
       {/* 主按钮 */}
       <button
@@ -67,8 +67,7 @@ export function SortButton({
             right: 0,
             width: "12rem",
             background: "rgba(30, 30, 30, 0.6)",
-            backdropFilter: "blur(1rem)",
-            WebkitBackdropFilter: "blur(1rem)",
+            top: "calc(100% + 0.5rem)",
             borderRadius: "1rem",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             padding: "0.5rem",
@@ -126,7 +125,6 @@ export function SortButton({
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "0.6rem 0.8rem",
-                border: "none",
                 background:
                   type === v ? "rgba(255, 255, 255, 0.05)" : "transparent",
                 borderRadius: "0.5rem",
