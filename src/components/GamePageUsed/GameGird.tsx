@@ -11,13 +11,13 @@ export function GameGrid({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-        gridTemplateRows: "repeat(auto-fill, minmax(200px, 1fr))",
-        width: "100%",
+        gridTemplateColumns: "repeat(auto-fill, minmax(9rem, 1fr))",
+        gap: "1.5rem",
+        paddingTop: "0rem",
       }}
     >
       {games.map((game) => (
-        <div key={game.id} className="animate-lime" style={{}}>
+        <div key={game.id} className="animate-lime">
           <GameCard
             title={game.title}
             coverUrl={game.coverUrl}

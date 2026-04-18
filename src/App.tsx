@@ -17,10 +17,10 @@ export default function App() {
     <div
       style={{
         overflow: "hidden",
-        width: "calc(100vw - 0px)",
-        height: "calc(100vh - 0px)",
+        width: "calc(100vw - 0rem)",
+        height: "calc(100vh - 0rem)",
         borderRadius: "1.4rem",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
+        border: "0.0625rem solid rgba(255, 255, 255, 0.1)",
         position: "relative",
         display: "flex",
       }}

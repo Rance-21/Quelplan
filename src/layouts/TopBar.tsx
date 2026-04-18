@@ -21,12 +21,9 @@ function WindowButton({
       onMouseLeave={() => setIsHovered(false)}
       style={{
         height: "100%",
-        padding: "0 1.1rem", // 20px
+        padding: "0 1rem",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        border: "none",
-        outline: "none",
         cursor: "default",
         borderRadius: "1.5rem",
         // 核心：根据 isHovered 动态切换颜色
@@ -37,7 +34,7 @@ function WindowButton({
       }}
     >
       {/* 根据图标类型微调大小，关闭按钮稍大一点 */}
-      <Icon size={isClose ? 18 : Icon === Minus ? 16 : 14} strokeWidth={1.5} />
+      <Icon size={isClose ? 18 : Icon === Minus ? 16 : 14} strokeWidth={1} />
     </button>
   );
 }
@@ -65,22 +62,21 @@ export function Topbar() {
 
   return (
     <header
-      data-tauri-drag-region
       style={{
         position: "fixed",
         top: 0,
         left: 0,
-        width: "100%",
-        height: "2.5rem", // 40px
+        width: "99.5%",
+        height: "2.25rem",
         zIndex: 50,
         display: "flex",
-        borderRadius: "2rem 2rem 2rem 2rem",
+        borderRadius: "2.1rem 2.1rem 2.1rem 2.1rem",
         justifyContent: "space-between",
         alignItems: "center",
         userSelect: "none", // 防止拖拽时误选中文字
       }}
     >
-      {/* 左侧透明区域：用于按住拖拽窗口 */}
+      {/* 左侧空白区域，保持和右侧按钮一样的宽度，方便用户拖动窗口 */}
       <div data-tauri-drag-region style={{ flex: 1, height: "100%" }} />
 
       {/* 右侧控制按钮组 */}

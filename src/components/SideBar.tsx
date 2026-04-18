@@ -53,7 +53,7 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
         gap: "0.6rem",
         zIndex: 40,
         background: "rgba(18, 18, 18, 0.3)",
-        backdropFilter: "blur(12px)",
+        backdropFilter: "blur(0.75rem)",
         borderRightWidth: 0,
       }}
     >
@@ -66,13 +66,12 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
           justifyContent: "center",
           borderRadius: "2rem",
           backgroundColor: "rgba(203, 213, 225, 0.3)",
-          borderWidth: "1px",
+          borderWidth: "0.0625rem",
           borderStyle: "solid",
           overflow: "hidden",
-          position: "relative", // 👈 重点：保持 relative，让里面的东西可以绝对定位
+          position: "relative",
         }}
       >
-        {/* 1. Logo图片永远存在。如果是主页就显示，不是就变透明且缩小 */}
         <img
           src={TempIcon}
           alt="Logo"
@@ -84,11 +83,9 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
             transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
             opacity: isHome ? 1 : 0,
             transform: isHome ? "scale(1)" : "scale(0.3)",
-            pointerEvents: isHome ? "auto" : "none", // 隐藏时让鼠标穿透，防止误触
           }}
         />
 
-        {/* 2. 返回按钮也永远存在，逻辑和上面刚好相反 */}
         <div
           style={{
             position: "absolute",

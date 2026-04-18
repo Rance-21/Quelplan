@@ -157,10 +157,14 @@
   animation: centerReveal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.no-drag {
+  -webkit-app-region: no-drag !important;
+}
+
 @keyframes limeFadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px); /* 缩短位移距离，更省性能 */
+    transform: translateY(0.625rem); /* 缩短位移距离，更省性能 */
   }
   to {
     opacity: 1;

@@ -1,4 +1,6 @@
 import { GameGrid } from "../../components/GamePageUsed/GameGird";
+import { SearchBox } from "../../components/GamePageUsed/SearchBox";
+import { SortButton } from "../../components/GamePageUsed/SortButton";
 
 export function FolderPage({
   onGameSelect,
@@ -39,52 +41,67 @@ export function FolderPage({
   ];
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        paddingTop: "3.4rem",
-        paddingLeft: "4.8rem",
-        backdropFilter: "blur(2.6px)",
-        boxSizing: "border-box",
-      }}
-    >
-      <style>{`
-        #folder-scroll-container::-webkit-scrollbar {
-          width: 6px;
-        }
-        #folder-scroll-container::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        #folder-scroll-container::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.15);
-          border-radius: 10px;
-        }
-        #folder-scroll-container::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-      `}</style>
-
-      {/* 核心滚动区：绑定我们刚才定义的专用 ID */}
+    <div>
+      {/*顶部搜索和排序*/}
       <div
-        id="folder-scroll-container"
         style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "0 2rem 2.5rem 2rem", // 左右边距和底边距
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          paddingLeft: "4.8rem",
+          backdropFilter: "blur(0.125rem)",
+          boxSizing: "border-box",
         }}
       >
-        {/* 为了看滚动效果，把假数据复制两遍 */}
-        <GameGrid
-          games={[
-            ...mockGames,
-            ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
-          ]}
-          onGameSelect={onGameSelect}
-        />
+        <div
+          style={{
+            paddingLeft: "2rem",
+            flexDirection: "row",
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            position: "relative",
+            zIndex: 60,
+          }}
+        >
+          <SearchBox
+            onSearch={(keyword) => {
+              console.log("准备发送给 Rust 的关键字:", keyword);
+              // 以后这里就会调用 invoke('search_games', { query: keyword })
+            }}
+          />
+
+          <SortButton
+            onSortChange={(type, order) => {
+              console.log("准备发送给 Rust 的排序规则:", { type, order });
+            }}
+          />
+        </div>
+        {/* 核心滚动区：绑定我们刚才定义的专用 ID */}
+        <div
+          id="folder-scroll-container"
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "2rem 2rem 2.5rem 2rem", // 左右边距和底边距
+          }}
+        >
+          <GameGrid
+            games={[
+              ...mockGames,
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+              ...mockGames.map((g) => ({ ...g, id: g.id + "_copy" })),
+            ]}
+            onGameSelect={onGameSelect}
+          />
+        </div>
       </div>
     </div>
   );

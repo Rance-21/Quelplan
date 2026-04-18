@@ -17,14 +17,10 @@ export function GameCard({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
       style={{
-        width: isHovered ? "85%" : "80%",
         aspectRatio: "3 / 4",
         borderRadius: "0.75rem",
         overflow: "hidden",
-        backgroundColor: "rgba(255, 255, 255, 0.05)",
         position: "relative",
-        transformOrigin: "center",
-        transition: "width 0.2s ease, transform 0.2s ease",
         cursor: "pointer",
       }}
     >
@@ -36,8 +32,8 @@ export function GameCard({
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          transform: isHovered ? "scale(1.05)" : "scale(1)",
-          transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)", // 平滑放大缩小的动画
+          transform: isHovered ? "scale(1.1)" : "scale(1)",
+          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)", // 平滑放大缩小的动画
         }}
       />
 
