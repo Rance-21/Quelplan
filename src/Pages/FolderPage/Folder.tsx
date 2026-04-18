@@ -57,12 +57,12 @@ export function FolderPage({
       >
         <div
           style={{
+            position: "relative",
             paddingLeft: "2rem",
             flexDirection: "row",
             display: "flex",
             alignItems: "center",
             gap: "1rem",
-            position: "relative",
             zIndex: 60,
           }}
         >
@@ -85,7 +85,7 @@ export function FolderPage({
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "2rem 2rem 2.5rem 2rem", // 左右边距和底边距
+            padding: "2rem 2rem 2.5rem 2rem",
           }}
         >
           <GameGrid

@@ -77,7 +77,14 @@ export function Topbar() {
       }}
     >
       {/* 左侧空白区域，保持和右侧按钮一样的宽度，方便用户拖动窗口 */}
-      <div data-tauri-drag-region style={{ flex: 1, height: "100%" }} />
+      <div
+        data-tauri-drag-region
+        style={{
+          height: "100%",
+          width: "100%",
+          backgroundColor: "rgba(255, 0, 0, 0.5)",
+        }}
+      />
 
       {/* 右侧控制按钮组 */}
       <div style={{ display: "flex", height: "100%" }}>
