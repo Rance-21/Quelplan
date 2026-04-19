@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Minus, Square, X, Copy } from "lucide-react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
+interface TopBarProps {
+  isHome?: boolean;
+}
+
 // 1. 窗口按钮组件
 function WindowButton({
   icon: Icon,
@@ -40,7 +44,7 @@ function WindowButton({
 }
 
 // 2. 顶部栏主组件
-export function Topbar() {
+export function Topbar({ isHome = false }: TopBarProps) {
   const appWindow = getCurrentWindow();
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -64,8 +68,6 @@ export function Topbar() {
     <header
       style={{
         position: "fixed",
-        top: 0,
-        left: 0,
         width: "99.5%",
         height: "2.25rem",
         zIndex: 50,
@@ -80,14 +82,23 @@ export function Topbar() {
       <div
         data-tauri-drag-region
         style={{
+          position: "absolute",
           height: "100%",
-          width: "100%",
-          backgroundColor: "rgba(255, 0, 0, 0.5)",
+          width: "calc(100% - 14.2rem)",
+          background: "transparent",
+          backdropFilter: isHome ? "none" : "blur(0.125rem)",
+          left: "4.82rem",
         }}
       />
 
       {/* 右侧控制按钮组 */}
-      <div style={{ display: "flex", height: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          height: "100%",
+          marginLeft: "calc(100% - 9rem)",
+        }}
+      >
         <WindowButton icon={Minus} onClick={() => appWindow.minimize()} />
         <WindowButton
           icon={isMaximized ? Copy : Square}

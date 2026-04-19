@@ -51,7 +51,6 @@ export function FolderPage({
           display: "flex",
           flexDirection: "column",
           paddingLeft: "4.8rem",
-          backdropFilter: "blur(0.125rem)",
           boxSizing: "border-box",
         }}
       >
@@ -63,6 +62,7 @@ export function FolderPage({
             display: "flex",
             alignItems: "center",
             gap: "1rem",
+            width: "50%",
             zIndex: 60,
           }}
         >
@@ -86,6 +86,7 @@ export function FolderPage({
             flex: 1,
             overflowY: "auto",
             padding: "2rem 2rem 2.5rem 2rem",
+            backdropFilter: "blur(0.125rem)",
           }}
         >
           <GameGrid

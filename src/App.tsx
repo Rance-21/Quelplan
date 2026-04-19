@@ -46,7 +46,7 @@ export default function App() {
           }}
         />
       </div>
-      <Topbar />
+      <Topbar isHome={currentPage === "Home"} />
       <Sidebar
         activeMenu={currentPage}
         onMenuClick={(menuName) => setCurrentPage(menuName)}
