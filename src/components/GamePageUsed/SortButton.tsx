@@ -34,13 +34,12 @@ export function SortButton({
 
   return (
     <div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
       style={{ position: "relative", zIndex: 50 }}
       data-tauri-drag-region="false"
     >
       {/* 主按钮 */}
       <button
+        onClick={() => setIsOpen(!isOpen)}
         className="s-btn"
         style={{
           display: "flex",
@@ -49,8 +48,8 @@ export function SortButton({
           width: "2rem",
           height: "2rem",
           paddingLeft: "0.26rem",
-          background: "rgba(147, 197, 253, 0.5)",
-          border: "0.1rem solid rgba(147, 197, 253, 0.4)",
+          background: "rgba(18, 18, 18, 0.3)",
+          backdropFilter: "blur(0.75rem)",
           borderRadius: "50%",
           cursor: "pointer",
           transition: "0.2s",
@@ -64,24 +63,21 @@ export function SortButton({
         <div
           style={{
             position: "absolute",
-            right: 0,
             width: "12rem",
-            background: "rgba(30, 30, 30, 0.6)",
-            top: "calc(100% + 0.5rem)",
+            background: "rgba(18, 18, 18, 0.3)",
+            top: "calc(100% + 0.1rem)",
             borderRadius: "1rem",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
             padding: "0.5rem",
             display: "flex",
             flexDirection: "column",
             gap: "0.25rem",
-            boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.2)",
+            backdropFilter: "blur(1.6rem)",
           }}
         >
           {/* 升降序切换 */}
           <div
             style={{
               display: "flex",
-              background: "rgba(0, 0, 0, 0.2)",
               borderRadius: "0.5rem",
               padding: "0.25rem",
               marginBottom: "0.25rem",
@@ -97,10 +93,9 @@ export function SortButton({
                   justifyContent: "center",
                   padding: "0.4rem 0",
                   borderRadius: "0.4rem",
-                  border: "none",
                   background:
-                    order === o ? "rgba(255, 255, 255, 0.15)" : "transparent",
-                  color: order === o ? "#fff" : "rgba(255, 255, 255, 0.5)",
+                    order === o ? "rgba(18, 18, 18, 0.3)" : "transparent",
+                  color: order === o ? "#fff" : "rgba(18, 18, 18, 0.3)",
                   cursor: "pointer",
                   transition: "0.2s",
                 }}

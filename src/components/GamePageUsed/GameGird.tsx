@@ -13,7 +13,6 @@ export function GameGrid({
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(9rem, 1fr))",
         gap: "1.5rem",
-        paddingTop: "0rem",
       }}
     >
       {games.map((game) => (

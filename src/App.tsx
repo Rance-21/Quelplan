@@ -52,8 +52,10 @@ export default function App() {
         onMenuClick={(menuName) => setCurrentPage(menuName)}
       />
 
-      <main>
-        {/* 动态渲染：哪个名字被激活，就渲染哪个组件 */}
+      <main
+        style={{ flex: 1, width: "100%", height: "100%", position: "relative" }}
+      >
+        {/* 哪个名字被激活，就渲染哪个组件 */}
         {currentPage === "Home" && <MainPage />}
 
         {currentPage === "Folder" && (

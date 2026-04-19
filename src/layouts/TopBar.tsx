@@ -32,8 +32,6 @@ function WindowButton({
         borderRadius: "1.5rem",
         // 核心：根据 isHovered 动态切换颜色
         backgroundColor: isHovered ? "rgba(82, 211, 211, 0.5)" : "transparent",
-        color: isHovered ? "#ffffff" : "#94a3b8", // slate-400 (#94a3b8) 变纯白
-
         transition: "background-color 0.2s ease, color 0.2s ease",
       }}
     >
@@ -69,7 +67,7 @@ export function Topbar({ isHome = false }: TopBarProps) {
       style={{
         position: "fixed",
         width: "99.5%",
-        height: "2.25rem",
+        height: "2.2rem",
         zIndex: 50,
         display: "flex",
         borderRadius: "2.1rem 2.1rem 2.1rem 2.1rem",
@@ -84,10 +82,10 @@ export function Topbar({ isHome = false }: TopBarProps) {
         style={{
           position: "absolute",
           height: "100%",
-          width: "calc(100% - 14.2rem)",
+          width: "calc(100% - 14rem)",
           background: "transparent",
           backdropFilter: isHome ? "none" : "blur(0.125rem)",
-          left: "4.82rem",
+          left: "4.81rem",
         }}
       />
 
@@ -96,7 +94,9 @@ export function Topbar({ isHome = false }: TopBarProps) {
         style={{
           display: "flex",
           height: "100%",
-          marginLeft: "calc(100% - 9rem)",
+          marginLeft: "calc(100% - 10rem)",
+          backdropFilter: isHome ? "none" : "blur(0.125rem)",
+          background: "transparent",
         }}
       >
         <WindowButton icon={Minus} onClick={() => appWindow.minimize()} />

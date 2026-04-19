@@ -65,7 +65,6 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
           display: "flex",
           justifyContent: "center",
           borderRadius: "2rem",
-          backgroundColor: "rgba(203, 213, 225, 0.3)",
           borderWidth: "0.0625rem",
           borderStyle: "solid",
           overflow: "hidden",
