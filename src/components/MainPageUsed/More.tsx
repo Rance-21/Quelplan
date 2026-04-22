@@ -14,13 +14,13 @@ export function More() {
           style={{
             position: "absolute",
             bottom: "calc(100% + 0.8rem)", // 向上偏移
-            width: "7rem",
+            width: "7.2rem",
             display: "flex",
+            background: "rgba(255, 255, 255, 0.8)",
             flexDirection: "column",
-            gap: "0.4rem",
+            gap: "0.6rem",
             padding: "0.6rem",
-            borderRadius: "1rem",
-            backdropFilter: "blur(1.6rem)",
+            borderRadius: "1.3rem",
           }}
         >
           {options.map((o) => (
@@ -30,14 +30,15 @@ export function More() {
                 setIsOpen(false);
               }}
               style={{
-                padding: "0.7rem 1rem",
-                borderRadius: "0.6rem",
+                padding: "0.5rem 0.8rem",
+                borderRadius: "1.1rem",
                 cursor: "pointer",
-                textAlign: "left",
-                fontSize: "0.9rem",
+                textAlign: "center",
+                fontSize: "1rem",
                 fontWeight: "500",
                 transition: "all 0.2s",
-                backgroundColor: "rgba(18, 18, 18, 0.1)",
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                backdropFilter: "blur(0.75rem)",
               }}
             >
               {o}
@@ -53,14 +54,16 @@ export function More() {
           width: "3.5rem",
           height: "3.5rem",
           borderRadius: "50%",
-          backgroundColor: "rgba(82, 211, 211, 1)",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#fff",
+          color: "#333",
           cursor: "pointer",
           transition: "all 0.2s",
         }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
         <MoreHorizontal size={24} />
       </button>

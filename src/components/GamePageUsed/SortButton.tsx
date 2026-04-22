@@ -47,16 +47,20 @@ export function SortButton({
           justifyContent: "center",
           width: "2rem",
           height: "2rem",
-          paddingLeft: "0.26rem",
-          background: "rgba(18, 18, 18, 0.3)",
-          color: "#fff", // 补充图标颜色，防止深色背景下看不清
+          paddingLeft: "0.27rem",
+          background: "rgba(255, 255, 255, 0.8)",
+          color: "#fff",
           backdropFilter: "blur(0.75rem)",
           borderRadius: "50%",
           cursor: "pointer",
           transition: "0.2s",
+          border: "none",
         }}
       >
-        <ListFilter size={16} style={{ marginRight: "0.25rem" }} />
+        <ListFilter
+          size={16}
+          style={{ marginRight: "0.25rem", color: "black" }}
+        />
       </button>
 
       {/* 下拉菜单 */}
@@ -64,24 +68,24 @@ export function SortButton({
         <div
           style={{
             position: "absolute",
-            width: "12rem",
-            background: "rgba(18, 18, 18, 0.3)",
-            top: "calc(100% + 0.1rem)",
-            borderRadius: "1rem",
-            padding: "0.5rem",
+            width: "8rem",
+            background: "rgba(255, 255, 255, 0.8)",
+            top: "calc(100% + 0.5rem)",
+            borderRadius: "1.3rem",
+            padding: "0.35rem",
             display: "flex",
             flexDirection: "column",
-            gap: "0.25rem",
-            backdropFilter: "blur(1.6rem)",
+            gap: "0.6rem", // 顶栏和下面选项组的整体间距
+            backdropFilter: "blur(0.75rem)",
+            boxSizing: "border-box",
           }}
         >
           {/* 升降序切换 */}
           <div
             style={{
               display: "flex",
-              borderRadius: "0.5rem",
-              padding: "0.25rem",
-              marginBottom: "0.25rem",
+              gap: "0.4rem", // 升降序两个按钮中间的缝隙
+              width: "100%",
             }}
           >
             {(["desc", "asc"] as SortOrder[]).map((o) => (
@@ -93,12 +97,14 @@ export function SortButton({
                   display: "flex",
                   justifyContent: "center",
                   padding: "0.4rem 0",
-                  borderRadius: "0.4rem",
+                  borderRadius: "1.3rem",
                   background:
-                    order === o ? "rgba(18, 18, 18, 0.3)" : "transparent",
-                  color: order === o ? "#fff" : "rgba(255, 255, 255, 0.1)",
+                    order === o
+                      ? "rgba(255, 255, 255, 0.8)"
+                      : "rgba(255, 255, 255, 0.3)",
                   cursor: "pointer",
                   transition: "0.2s",
+                  border: "none",
                 }}
               >
                 {o === "desc" ? (
@@ -111,29 +117,37 @@ export function SortButton({
           </div>
 
           {/* 排序字段 */}
-          {opts.map(({ l, v }) => (
-            <button
-              key={v}
-              className="s-opt"
-              onClick={() => update(v, order)}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0.6rem 0.8rem",
-                background:
-                  type === v ? "rgba(18, 18, 18, 0.3)" : "transparent", // 统一修改为侧栏颜色
-                borderRadius: "0.5rem",
-                color: type === v ? "#fff" : "rgba(255, 255, 255, 0.7)",
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                transition: "0.2s",
-              }}
-            >
-              <span>{l}</span>
-              {type === v && <Check size={16} color="#93c5fd" />}
-            </button>
-          ))}
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}
+          >
+            {opts.map(({ l, v }) => (
+              <button
+                key={v}
+                className="s-opt"
+                onClick={() => update(v, order)}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "0.4rem 0.8rem", // 稍微拉高了一点点文字上下的呼吸感
+                  width: "100%",
+                  background:
+                    type === v
+                      ? "rgba(255, 255, 255, 0.8)"
+                      : "rgba(255, 255, 255, 0.3)",
+                  borderRadius: "1.3rem",
+                  fontSize: "0.95rem",
+                  cursor: "pointer",
+                  transition: "0.2s",
+                  border: "none",
+                  boxSizing: "border-box",
+                }}
+              >
+                <span>{l}</span>
+                {type === v && <Check size={16} color="#93c5fd" />}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

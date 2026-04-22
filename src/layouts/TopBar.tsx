@@ -31,7 +31,7 @@ function WindowButton({
         cursor: "default",
         borderRadius: "1.5rem",
         // 核心：根据 isHovered 动态切换颜色
-        backgroundColor: isHovered ? "rgba(82, 211, 211, 0.5)" : "transparent",
+        backgroundColor: isHovered ? "rgba(255, 255, 255, 0.8)" : "transparent",
         transition: "background-color 0.2s ease, color 0.2s ease",
       }}
     >
