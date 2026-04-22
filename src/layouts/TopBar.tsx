@@ -84,7 +84,7 @@ export function Topbar({ isHome = false }: TopBarProps) {
           height: "100%",
           width: "calc(100% - 14rem)",
           background: "transparent",
-          backdropFilter: isHome ? "none" : "blur(0.125rem)",
+          //backdropFilter: isHome ? "none" : "blur(0.125rem)",
           left: "4.81rem",
         }}
       />
@@ -95,7 +95,7 @@ export function Topbar({ isHome = false }: TopBarProps) {
           display: "flex",
           height: "100%",
           marginLeft: "calc(100% - 10rem)",
-          backdropFilter: isHome ? "none" : "blur(0.125rem)",
+          //backdropFilter: isHome ? "none" : "blur(0.125rem)",
           background: "transparent",
         }}
       >

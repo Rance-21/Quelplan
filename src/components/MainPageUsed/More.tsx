@@ -3,7 +3,6 @@ import { MoreHorizontal } from "lucide-react";
 
 export function More() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
 
   const options = ["详情页", "关联启动", "游戏目录"];
 
@@ -15,21 +14,19 @@ export function More() {
           style={{
             position: "absolute",
             bottom: "calc(100% + 0.8rem)", // 向上偏移
-            width: "10rem",
+            width: "7rem",
             display: "flex",
             flexDirection: "column",
             gap: "0.4rem",
             padding: "0.6rem",
             borderRadius: "1rem",
             backdropFilter: "blur(1.6rem)",
-            boxShadow: "0 0.5rem 1.5rem rgba(0, 0, 0, 0.2)",
           }}
         >
           {options.map((o) => (
             <button
               key={o}
               onClick={() => {
-                setSelected(o);
                 setIsOpen(false);
               }}
               style={{

@@ -52,7 +52,9 @@ export function Sidebar({ activeMenu, onMenuClick }: SidebarProps) {
         paddingBottom: "1.5rem",
         gap: "0.6rem",
         zIndex: 40,
-        background: "rgba(18, 18, 18, 0.3)",
+        //background: "rgba(18, 18, 18, 0.3)",
+        //background: "rgba(255, 255, 255, 0.3)",
+        background: "rgba(0, 0, 0, 0.6)",
         backdropFilter: "blur(0.75rem)",
         borderRightWidth: 0,
       }}

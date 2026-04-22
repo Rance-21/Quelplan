@@ -43,6 +43,9 @@ export default function App() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
+            filter: currentPage === "Home" ? "none" : "blur(0.15rem)",
+            transform: currentPage === "Home" ? "scale(1)" : "scale(1.05)",
+            transition: "filter 0.25s ease, transform 0.25s ease",
           }}
         />
       </div>

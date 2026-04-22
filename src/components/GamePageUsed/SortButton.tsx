@@ -49,6 +49,7 @@ export function SortButton({
           height: "2rem",
           paddingLeft: "0.26rem",
           background: "rgba(18, 18, 18, 0.3)",
+          color: "#fff", // 补充图标颜色，防止深色背景下看不清
           backdropFilter: "blur(0.75rem)",
           borderRadius: "50%",
           cursor: "pointer",
@@ -95,7 +96,7 @@ export function SortButton({
                   borderRadius: "0.4rem",
                   background:
                     order === o ? "rgba(18, 18, 18, 0.3)" : "transparent",
-                  color: order === o ? "#fff" : "rgba(18, 18, 18, 0.3)",
+                  color: order === o ? "#fff" : "rgba(255, 255, 255, 0.1)",
                   cursor: "pointer",
                   transition: "0.2s",
                 }}
@@ -121,7 +122,7 @@ export function SortButton({
                 alignItems: "center",
                 padding: "0.6rem 0.8rem",
                 background:
-                  type === v ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                  type === v ? "rgba(18, 18, 18, 0.3)" : "transparent", // 统一修改为侧栏颜色
                 borderRadius: "0.5rem",
                 color: type === v ? "#fff" : "rgba(255, 255, 255, 0.7)",
                 fontSize: "0.9rem",

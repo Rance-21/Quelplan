@@ -86,8 +86,8 @@ export function FolderPage({
             flex: 1,
             overflowY: "auto",
             padding: "2rem 2rem 2.5rem 2rem",
-            paddingTop: "0rem",
-            backdropFilter: "blur(0.125rem)",
+            paddingTop: "2rem",
+            //backdropFilter: "blur(0.125rem)",
           }}
         >
           <GameGrid
