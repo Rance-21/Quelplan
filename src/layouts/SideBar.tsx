@@ -9,6 +9,8 @@ export interface SidebarProps {
   activeMenu: AppPage;
   onMenuClick: (menuName: AppPage) => void;
   onBack: () => void;
+  forceBack?: boolean;
+  interactionDisabled?: boolean;
 }
 
 const avatarUpdatedEvent = "quelplan-avatar-updated";
@@ -17,17 +19,20 @@ interface NavButtonProps {
   icon: LucideIcon;
   isActive?: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }
 
 const NavButton = memo(function NavButton({
   icon: Icon,
   isActive = false,
   onClick,
+  disabled = false,
 }: NavButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`qp-nav-button animate-reveal${isActive ? " is-active" : ""}`}
       style={{
         width: "100%",
@@ -48,9 +53,12 @@ export const Sidebar = memo(function Sidebar({
   activeMenu,
   onMenuClick,
   onBack,
+  forceBack = false,
+  interactionDisabled = false,
 }: SidebarProps) {
   const [avatarSrc, setAvatarSrc] = useState(AppIcon);
   const isHome = activeMenu === "Home";
+  const showBack = forceBack || !isHome;
 
   useEffect(() => {
     let isMounted = true;
@@ -126,8 +134,8 @@ export const Sidebar = memo(function Sidebar({
             position: "absolute",
             objectFit: "cover",
             transition: "all 0.12s cubic-bezier(0.16, 1, 0.3, 1)",
-            opacity: isHome ? 1 : 0,
-            transform: isHome ? "scale(1)" : "scale(0.3)",
+            opacity: showBack ? 0 : 1,
+            transform: showBack ? "scale(0.3)" : "scale(1)",
           }}
         />
 
@@ -137,12 +145,16 @@ export const Sidebar = memo(function Sidebar({
             width: "100%",
             height: "100%",
             transition: "all 0.12s cubic-bezier(0.16, 1, 0.3, 1)",
-            opacity: isHome ? 0 : 1,
-            transform: isHome ? "scale(0.3)" : "scale(1)",
-            pointerEvents: isHome ? "none" : "auto",
+            opacity: showBack ? 1 : 0,
+            transform: showBack ? "scale(1)" : "scale(0.3)",
+            pointerEvents: showBack ? "auto" : "none",
           }}
         >
-          <NavButton icon={Undo2} onClick={onBack} />
+          <NavButton
+            icon={Undo2}
+            onClick={onBack}
+            disabled={interactionDisabled}
+          />
         </div>
       </div>
 
@@ -160,6 +172,7 @@ export const Sidebar = memo(function Sidebar({
           icon={FolderHeart}
           isActive={activeMenu === "Folder"}
           onClick={handleFolderClick}
+          disabled={interactionDisabled}
         />
       </nav>
 
@@ -177,6 +190,7 @@ export const Sidebar = memo(function Sidebar({
           icon={Settings}
           isActive={activeMenu === "Settings"}
           onClick={handleSettingsClick}
+          disabled={interactionDisabled}
         />
       </nav>
     </aside>

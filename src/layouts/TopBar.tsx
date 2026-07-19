@@ -47,7 +47,13 @@ const WindowButton = memo(function WindowButton({
   );
 });
 
-export const Topbar = memo(function Topbar() {
+interface TopbarProps {
+  closeDisabled?: boolean;
+}
+
+export const Topbar = memo(function Topbar({
+  closeDisabled = false,
+}: TopbarProps) {
   const { closeToTray } = useAppSettings();
   const [isMaximized, setIsMaximized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -180,7 +186,7 @@ export const Topbar = memo(function Topbar() {
           icon={X}
           onClick={handleClose}
           isClose
-          disabled={isClosing}
+          disabled={isClosing || closeDisabled}
         />
       </div>
     </header>

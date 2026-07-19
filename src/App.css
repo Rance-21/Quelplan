@@ -472,15 +472,20 @@ button.qp-expanded-row:hover:not(:disabled) {
     transform 0.2s ease;
 }
 
-.qp-nav-button:hover {
+.qp-nav-button:hover:not(:disabled) {
   background: var(--qp-control-hover);
   transform: scale(1.1);
 }
 
 .qp-nav-button.is-active,
-.qp-nav-button.is-active:hover {
+.qp-nav-button.is-active:hover:not(:disabled) {
   background: var(--qp-control-muted);
   color: var(--qp-text);
+}
+
+.qp-nav-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .game-card-image {

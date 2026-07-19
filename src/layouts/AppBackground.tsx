@@ -8,12 +8,12 @@ import { useTheme } from "../lib/theme";
 
 interface AppBackgroundProps {
   currentPage: AppPage;
-  isFolderWindowOpen: boolean;
+  isOverlayWindowOpen: boolean;
 }
 
 export const AppBackground = memo(function AppBackground({
   currentPage,
-  isFolderWindowOpen,
+  isOverlayWindowOpen,
 }: AppBackgroundProps) {
   const { resolvedMode } = useTheme();
   const { lightBackgroundPath, darkBackgroundPath } = useBackgroundSettings();
@@ -29,7 +29,7 @@ export const AppBackground = memo(function AppBackground({
   const isFocusPage =
     currentPage === "Settings" ||
     currentPage === "Detail" ||
-    (currentPage === "Folder" && isFolderWindowOpen);
+    isOverlayWindowOpen;
 
   return (
     <div

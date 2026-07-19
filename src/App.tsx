@@ -8,6 +8,8 @@ import { MainPage } from "./pages/main/MainPage";
 import { SettingsPage } from "./pages/setting/Settings";
 import { useAppState } from "./hooks/App";
 import { useFolderState } from "./hooks/Folder";
+import { useAppUpdater } from "./hooks/useAppUpdater";
+import { UpdateWindow } from "./components/update_window/UpdateWindow";
 import type { AppPage } from "./lib/navigation";
 import "./App.css";
 
@@ -25,8 +27,23 @@ export default function App() {
   const folderState = useFolderState();
   const { activeWindow, isAddFlowActive, handleCloseFolderWindow } =
     folderState;
+  const appUpdater = useAppUpdater();
+  const {
+    updateInfo,
+    phase: updatePhase,
+    progress: updateProgress,
+    isOpen: isUpdateWindowOpen,
+    isBusy: isUpdateBusy,
+    isClosing: isUpdateWindowClosing,
+    dismissUpdate,
+    startUpdate,
+  } = appUpdater;
   const handlePageChange = useCallback(
     (page: AppPage) => {
+      if (isUpdateWindowOpen) {
+        if (isUpdateBusy) return;
+        dismissUpdate(true);
+      }
       if (currentPage === "Folder" && activeWindow !== null) {
         if (activeWindow === "add" && isAddFlowActive) return;
         if (page === "Folder") {
@@ -41,11 +58,19 @@ export default function App() {
       activeWindow,
       changePage,
       currentPage,
+      dismissUpdate,
       handleCloseFolderWindow,
       isAddFlowActive,
+      isUpdateBusy,
+      isUpdateWindowOpen,
     ],
   );
   const handleBack = useCallback(() => {
+    if (isUpdateWindowOpen) {
+      if (isUpdateBusy) return;
+      dismissUpdate();
+      return;
+    }
     if (currentPage === "Folder" && activeWindow !== null) {
       if (activeWindow === "add" && isAddFlowActive) return;
       handleCloseFolderWindow();
@@ -55,8 +80,11 @@ export default function App() {
   }, [
     activeWindow,
     currentPage,
+    dismissUpdate,
     handleCloseFolderWindow,
     isAddFlowActive,
+    isUpdateBusy,
+    isUpdateWindowOpen,
     navigateBack,
   ]);
   const handleFolderGameDeleted = useCallback(
@@ -82,13 +110,18 @@ export default function App() {
     >
       <AppBackground
         currentPage={currentPage}
-        isFolderWindowOpen={currentPage === "Folder" && activeWindow !== null}
+        isOverlayWindowOpen={
+          isUpdateWindowOpen ||
+          (currentPage === "Folder" && activeWindow !== null)
+        }
       />
-      <Topbar />
+      <Topbar closeDisabled={isUpdateBusy} />
       <Sidebar
         activeMenu={currentPage}
         onMenuClick={handlePageChange}
         onBack={handleBack}
+        forceBack={isUpdateWindowOpen}
+        interactionDisabled={isUpdateBusy}
       />
 
       <main
@@ -99,26 +132,51 @@ export default function App() {
           position: "relative",
         }}
       >
-        {currentPage === "Home" && (
-          <MainPage mainGame={mainGame} onOpenDetail={handleDetail} />
-        )}
+        <div
+          aria-hidden={isUpdateWindowOpen}
+          inert={isUpdateWindowOpen}
+          style={{ position: "relative", width: "100%", height: "100%" }}
+        >
+          {currentPage === "Home" && (
+            <MainPage mainGame={mainGame} onOpenDetail={handleDetail} />
+          )}
 
-        {currentPage === "Folder" && (
-          <FolderPage
-            folderState={folderState}
-            onGameDeleted={handleFolderGameDeleted}
-            onGameSelectMain={handleMain}
-            onGameSelectDetail={handleDetail}
-          />
-        )}
+          {currentPage === "Folder" && (
+            <FolderPage
+              folderState={folderState}
+              onGameDeleted={handleFolderGameDeleted}
+              onGameSelectMain={handleMain}
+              onGameSelectDetail={handleDetail}
+            />
+          )}
 
-        {currentPage === "Settings" && <SettingsPage />}
+          {currentPage === "Settings" && <SettingsPage />}
 
-        {currentPage === "Detail" && (
-          <DetailPage
-            id={detailId}
-            onFolderGameUpdate={folderState.handleFolderGameUpdated}
-          />
+          {currentPage === "Detail" && (
+            <DetailPage
+              id={detailId}
+              onFolderGameUpdate={folderState.handleFolderGameUpdated}
+            />
+          )}
+        </div>
+
+        {isUpdateWindowOpen && updateInfo && (
+          <div
+            style={{
+              position: "absolute",
+              inset: "0 0 0 4.8rem",
+              zIndex: 200000,
+            }}
+          >
+            <UpdateWindow
+              updateInfo={updateInfo}
+              phase={updatePhase}
+              progress={updateProgress}
+              isClosing={isUpdateWindowClosing}
+              onCancel={() => dismissUpdate()}
+              onUpdate={() => void startUpdate()}
+            />
+          </div>
         )}
       </main>
     </div>

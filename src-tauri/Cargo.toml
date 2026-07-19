@@ -35,6 +35,7 @@ windows = { version = "0.62.2", features = [
     "Win32_System_SystemServices",
 ] }
 tauri-plugin-autostart = "2.5.1"
+tauri-plugin-process = "2"
 opener = "0.7"
 winreg = "0.52"
 dotenvy_macro = "0.15.7"
