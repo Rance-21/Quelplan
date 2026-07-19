@@ -1,7 +1,7 @@
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { memo } from "react";
-import LightBackground from "../assets/Background.jpg";
-import DarkBackground from "../assets/34844544_p0.jpg";
+import LightBackground from "../assets/light.png";
+import DarkBackground from "../assets/dark.png";
 import { useBackgroundSettings } from "../lib/background";
 import type { AppPage } from "../lib/navigation";
 import { useTheme } from "../lib/theme";
