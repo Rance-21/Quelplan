@@ -1,6 +1,6 @@
 use tauri::{Runtime, WebviewWindow, Window};
 
-const WINDOW_RADIUS_CSS_PX: f64 = 8.0;
+const WINDOW_RADIUS_CSS_PX: f64 = 16.0;
 
 pub fn apply<R: Runtime>(window: &Window<R>) {
     #[cfg(target_os = "windows")]
@@ -77,9 +77,10 @@ mod windows_impl {
         get_size: impl FnOnce() -> Result<tauri::PhysicalSize<u32>, String>,
         get_scale_factor: impl FnOnce() -> Result<f64, String>,
     ) -> Result<(), String> {
-        if apply_dwm_rounding(hwnd).is_ok() {
-            return Ok(());
-        }
+        // Keep the native Windows 11 hint and border suppression, then apply a
+        // region everywhere so the custom radius is not capped by DWM's fixed
+        // corner size and stays identical to the CSS frame.
+        let _ = apply_dwm_rounding(hwnd);
 
         apply_rounded_region(hwnd, get_size()?, get_scale_factor()?)
     }
@@ -149,5 +150,17 @@ mod windows_impl {
 
     fn ellipse_diameter(scale_factor: f64) -> i32 {
         ((WINDOW_RADIUS_CSS_PX * 2.0 * scale_factor).round() as i32).max(1)
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::ellipse_diameter;
+
+        #[test]
+        fn corner_diameter_tracks_display_scale() {
+            assert_eq!(ellipse_diameter(1.0), 32);
+            assert_eq!(ellipse_diameter(1.5), 48);
+            assert_eq!(ellipse_diameter(2.0), 64);
+        }
     }
 }
