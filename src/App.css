@@ -50,12 +50,13 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --radius: 1rem;
+  --qp-window-radius: 1rem;
   --qp-surface: rgba(255, 255, 255, 0.3);
   --qp-surface-strong: rgba(255, 255, 255, 0.8);
   --qp-surface-muted: #f4f4f5;
   --qp-text: #18181b;
   --qp-muted-text: #52525b;
-  --qp-sidebar-bg: rgba(255, 255, 255, 0.3);
+  --qp-sidebar-bg: rgba(255, 255, 255, 0.58);
   --qp-setting-bar-bg: rgba(255, 255, 255, 0.62);
   --qp-setting-bar-hover: rgba(255, 255, 255, 0.78);
   --qp-control-bg: rgba(255, 255, 255, 0.8);
@@ -77,9 +78,9 @@
   --qp-primary-action-text: #ffffff;
   --qp-detail-row-bg: var(--qp-setting-bar-bg);
   --qp-detail-row-active: var(--qp-setting-bar-hover);
-  --qp-focused-background-filter: blur(0.12rem);
-  --qp-page-glass-top: rgba(248, 250, 252, 0.3);
-  --qp-page-glass-bottom: rgba(248, 250, 252, 0.18);
+  --qp-focused-background-filter: blur(0.12rem) saturate(0.88);
+  --qp-page-glass-top: rgba(248, 250, 252, 0.48);
+  --qp-page-glass-bottom: rgba(248, 250, 252, 0.34);
   --qp-panel-bg: rgba(255, 255, 255, 0.56);
   --qp-panel-hover: rgba(255, 255, 255, 0.7);
   --qp-panel-subtle: rgba(255, 255, 255, 0.24);
@@ -108,7 +109,7 @@
   --qp-surface-muted: rgba(39, 39, 42, 0.86);
   --qp-text: #f4f4f5;
   --qp-muted-text: #b8bec9;
-  --qp-sidebar-bg: rgba(8, 12, 20, 0.48);
+  --qp-sidebar-bg: rgba(8, 12, 20, 0.66);
   --qp-setting-bar-bg: rgba(39, 39, 42, 0.64);
   --qp-setting-bar-hover: rgba(63, 63, 70, 0.74);
   --qp-control-bg: rgba(39, 39, 42, 0.86);
@@ -123,9 +124,10 @@
   --qp-window-hover-bg: rgba(255, 255, 255, 0.8);
   --qp-primary-action-bg: #ffffff;
   --qp-primary-action-text: #18181b;
-  --qp-focused-background-filter: blur(0.12rem) brightness(0.78);
-  --qp-page-glass-top: rgba(7, 11, 19, 0.32);
-  --qp-page-glass-bottom: rgba(7, 11, 19, 0.22);
+  --qp-focused-background-filter: blur(0.12rem) brightness(0.78)
+    saturate(0.88);
+  --qp-page-glass-top: rgba(7, 11, 19, 0.58);
+  --qp-page-glass-bottom: rgba(7, 11, 19, 0.44);
   --qp-panel-bg: rgba(17, 23, 34, 0.64);
   --qp-panel-hover: rgba(25, 33, 47, 0.76);
   --qp-panel-subtle: rgba(255, 255, 255, 0.045);
@@ -222,7 +224,15 @@ img {
 html,
 body,
 #root {
-  background-color: transparent !important;
+  background-color: var(--background) !important;
+}
+
+.qp-app-frame {
+  border-radius: var(--qp-window-radius);
+}
+
+html[data-window-maximized="true"] .qp-app-frame {
+  border-radius: 0;
 }
 
 .qp-window-frame {
@@ -249,7 +259,6 @@ body,
     var(--qp-page-glass-top),
     var(--qp-page-glass-bottom)
   );
-  backdrop-filter: blur(0.55rem) saturate(0.88);
 }
 
 .qp-page-kicker {
@@ -558,11 +567,6 @@ button.qp-expanded-row:hover:not(:disabled) {
 
 .qp-settings-page {
   padding: 4.7rem 2.5rem 2.5rem 7.3rem;
-}
-
-.qp-settings-page,
-.qp-detail-page {
-  filter: blur(0.35rem) saturate(0.88);
 }
 
 .qp-settings-page .qp-action-button,

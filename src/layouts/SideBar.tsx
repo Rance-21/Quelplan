@@ -108,7 +108,6 @@ export const Sidebar = memo(function Sidebar({
         gap: "0.6rem",
         zIndex: 40,
         background: "var(--qp-sidebar-bg)",
-        backdropFilter: "blur(0.75rem)",
         borderRightWidth: 0,
       }}
     >

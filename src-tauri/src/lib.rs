@@ -6,6 +6,7 @@ mod models;
 mod services;
 mod state;
 mod utils;
+mod window_shape;
 
 use crate::commands::close::save_full_snapshot_on_close;
 use crate::models::SearchCache;
@@ -48,6 +49,10 @@ pub fn run() {
 
             app.manage(app_state);
 
+            if let Some(window) = app.get_webview_window("main") {
+                window_shape::apply_webview(&window);
+            }
+
             let _tray = TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
@@ -69,6 +74,16 @@ pub fn run() {
                 .build(app)?;
 
             Ok(())
+        })
+        .on_window_event(|window, event| {
+            if window.label() == "main"
+                && matches!(
+                    event,
+                    tauri::WindowEvent::Resized(_) | tauri::WindowEvent::ScaleFactorChanged { .. }
+                )
+            {
+                window_shape::apply(window);
+            }
         })
         .invoke_handler(tauri::generate_handler![
             commands::game::get_folder_games,

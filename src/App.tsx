@@ -97,11 +97,11 @@ export default function App() {
 
   return (
     <div
+      className="qp-app-frame"
       style={{
         overflow: "hidden",
         width: "calc(100vw - 0rem)",
         height: "calc(100vh - 0rem)",
-        borderRadius: "1.4rem",
         border: "0.0625rem solid var(--qp-border-soft)",
         position: "relative",
         display: "flex",

@@ -33,7 +33,12 @@ export const AppBackground = memo(function AppBackground({
 
   return (
     <div
-      style={{ position: "absolute", inset: 0, zIndex: -1, overflow: "hidden" }}
+      style={{
+        position: "absolute",
+        inset: "-0.25rem",
+        zIndex: -1,
+        overflow: "hidden",
+      }}
     >
       <img
         src={backgroundSrc}
@@ -43,13 +48,11 @@ export const AppBackground = memo(function AppBackground({
           height: "100%",
           display: "block",
           objectFit: "cover",
-          transform: currentPage === "Home" ? "scale(1)" : "scale(1.05)",
           filter: isFocusPage
             ? "var(--qp-focused-background-filter)"
             : currentPage === "Home"
               ? undefined
-              : "blur(0.15rem)",
-          transition: "transform 0.2s ease",
+              : "blur(0.12rem) saturate(0.92)",
         }}
       />
     </div>

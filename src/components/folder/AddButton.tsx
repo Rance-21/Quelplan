@@ -26,7 +26,6 @@ export function AddButton({ onOpenAddWindow }: AddButtonProps) {
           width: "2rem",
           height: "2rem",
           paddingLeft: "0.27rem",
-          backdropFilter: "blur(0.75rem)",
           borderRadius: "50%",
           cursor: "pointer",
           border: "none",

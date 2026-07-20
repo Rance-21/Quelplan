@@ -15,6 +15,12 @@ function getAppWindow() {
 
 const appWindow = getAppWindow();
 
+function syncMaximizedAttribute(maximized: boolean) {
+  document.documentElement.dataset.windowMaximized = maximized
+    ? "true"
+    : "false";
+}
+
 interface WindowButtonProps {
   icon: LucideIcon;
   onClick: () => void;
@@ -68,7 +74,10 @@ export const Topbar = memo(function Topbar({
     void appWindow
       .isMaximized()
       .then((maximized) => {
-        if (!disposed) setIsMaximized(maximized);
+        if (!disposed) {
+          setIsMaximized(maximized);
+          syncMaximizedAttribute(maximized);
+        }
       })
       .catch(() => undefined);
 
@@ -77,7 +86,10 @@ export const Topbar = memo(function Topbar({
         void appWindow
           .isMaximized()
           .then((maximized) => {
-            if (!disposed) setIsMaximized(maximized);
+            if (!disposed) {
+              setIsMaximized(maximized);
+              syncMaximizedAttribute(maximized);
+            }
           })
           .catch(() => undefined);
       })
@@ -93,6 +105,7 @@ export const Topbar = memo(function Topbar({
     return () => {
       disposed = true;
       removeResizeListener?.();
+      syncMaximizedAttribute(false);
     };
   }, []);
 
