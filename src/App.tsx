@@ -1,6 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { AppBackground } from "./layouts/AppBackground";
 import { Sidebar } from "./layouts/SideBar";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Topbar } from "./layouts/TopBar";
 import { DetailPage } from "./pages/detail/DetailPage";
 import { FolderPage } from "./pages/folder/Folder";
@@ -94,6 +95,20 @@ export default function App() {
     },
     [folderState.handleGameDelete, handleGameDeleted],
   );
+
+  useEffect(() => {
+    const showWindow = async () => {
+      try {
+        const window = getCurrentWindow();
+        await window.show();
+        console.log("window shown");
+      } catch (error) {
+        console.error("failed to show window:", error);
+      }
+    };
+
+    void showWindow();
+  }, []);
 
   return (
     <div
