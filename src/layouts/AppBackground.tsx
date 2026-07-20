@@ -48,7 +48,7 @@ export const AppBackground = memo(function AppBackground({
             ? "var(--qp-focused-background-filter)"
             : currentPage === "Home"
               ? undefined
-              : "blur(0.2rem)",
+              : "blur(0.15rem)",
           transition: "transform 0.2s ease",
         }}
       />

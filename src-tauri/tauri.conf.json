@@ -16,7 +16,6 @@
         "width": 1152,
         "height": 720,
         "decorations": false,
-        "transparent": true,
         "shadow": false,
         "resizable": false,
         "maximizable": true
