@@ -1,8 +1,8 @@
 import { ChevronDown, Trash2 } from "lucide-react";
 import type { AddSearchItem } from "../../hooks/useAddWindow";
 import { useI18n } from "../../lib/i18n";
+import { formatSearchResultScore } from "../../utils/searchResultFormatting";
 import { CandidateCover, CandidateMetrics } from "./SearchResultParts";
-import { formatSearchResultScore } from "./searchResultFormatting";
 
 interface SearchResultsProps {
   items: AddSearchItem[];
@@ -188,12 +188,13 @@ export function SearchResults({
               }}
             >
               <div
-                className="no-scrollbar"
                 style={{
                   minHeight: 0,
                   display: "flex",
+                  flexWrap: "wrap",
+                  alignContent: "flex-start",
                   gap: "0.65rem",
-                  overflowX: "auto",
+                  overflow: "hidden",
                   padding: isExpanded ? "0.65rem 0.15rem 0.15rem" : undefined,
                 }}
               >
@@ -209,7 +210,9 @@ export function SearchResults({
                     onClick={() => onCandidateSelect(outsideIndex, insideIndex)}
                     style={{
                       width: "9rem",
-                      minWidth: "9rem",
+                      minWidth: 0,
+                      maxWidth: "100%",
+                      flex: "0 1 9rem",
                       padding: "0.55rem",
                       display: "flex",
                       flexDirection: "column",

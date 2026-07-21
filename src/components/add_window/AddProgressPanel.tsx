@@ -12,7 +12,6 @@ interface AddProgressPanelProps {
   expandedIndex: number | null;
   isCancelling: boolean;
   selectionCount: number;
-  steamImportedCount: number;
   onExpandedIndexChange: (index: number | null) => void;
   onCandidateSelect: (outsideIndex: number, insideIndex: number) => void;
   onResultDelete: (displayIndex: number) => void;
@@ -26,7 +25,6 @@ export function AddProgressPanel({
   expandedIndex,
   isCancelling,
   selectionCount,
-  steamImportedCount,
   onExpandedIndexChange,
   onCandidateSelect,
   onResultDelete,
@@ -34,15 +32,13 @@ export function AddProgressPanel({
   onConfirm,
 }: AddProgressPanelProps) {
   const { t } = useI18n();
+
+  if (phase === "steam-importing") return null;
+
   const isSearchPhase =
     phase === "searching" || phase === "review" || phase === "committing";
 
   if (!isSearchPhase) {
-    const message =
-      phase === "steam-importing"
-        ? t("add.status.steamImporting", { count: steamImportedCount })
-        : t("add.status.appAdding");
-
     return (
       <div
         style={{
@@ -57,7 +53,7 @@ export function AddProgressPanel({
         }}
       >
         <strong style={{ color: "var(--qp-text)", fontSize: "1rem" }}>
-          {message}
+          {t("add.status.appAdding")}
         </strong>
       </div>
     );

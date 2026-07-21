@@ -1,5 +1,5 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { showToast } from "../components/ui/Toast";
+import { dismissToast, showToast } from "../components/ui/Toast";
 import { translate } from "../lib/i18n";
 import type { FolderGame } from "./foldergames";
 import { invokeApi, withApiErrorToast } from "./invoke";
@@ -50,11 +50,20 @@ export async function addNewGame(
   sourceMask: number,
   name: string | null = null,
 ): Promise<SearchResult> {
-  return invokeApi<SearchResult>("add_new_game", {
-    path: gamePath,
-    name,
-    source_mask: sourceMask,
-  });
+  const loadingToastId = showToast(
+    translate("toast.searchGamesLoading"),
+    "loading",
+  );
+
+  try {
+    return await invokeApi<SearchResult>("add_new_game", {
+      path: gamePath,
+      name,
+      source_mask: sourceMask,
+    });
+  } finally {
+    dismissToast(loadingToastId);
+  }
 }
 
 export async function addNewGames(
@@ -62,7 +71,10 @@ export async function addNewGames(
   sourceMask: number,
   onSearchResult: (result: SearchResult) => void,
 ): Promise<number> {
-  showToast(translate("toast.searchGamesLoading"), "loading");
+  const loadingToastId = showToast(
+    translate("toast.searchGamesLoading"),
+    "loading",
+  );
 
   let unlisten: (() => void) | undefined;
   let resultCount = 0;
@@ -86,19 +98,32 @@ export async function addNewGames(
     return resultCount;
   } finally {
     unlisten?.();
+    dismissToast(loadingToastId);
   }
 }
 
 export async function addGamesToDb(
   selections: SearchSelection[],
 ): Promise<void> {
-  await invokeApi("add_games_to_db", { idxs: selections });
+  const loadingToastId = showToast(
+    translate("toast.addGamesLoading"),
+    "loading",
+  );
+
+  try {
+    await invokeApi("add_games_to_db", { idxs: selections });
+  } finally {
+    dismissToast(loadingToastId);
+  }
 }
 
 export async function addSteamGames(
   onGameDiscovered: (game: FolderGame) => void,
 ): Promise<number> {
-  showToast(translate("toast.addSteamGamesLoading"), "loading");
+  const loadingToastId = showToast(
+    translate("toast.addSteamGamesLoading"),
+    "loading",
+  );
 
   let unlisten: (() => void) | undefined;
   let addedCount = 0;
@@ -122,5 +147,6 @@ export async function addSteamGames(
     return addedCount;
   } finally {
     unlisten?.();
+    dismissToast(loadingToastId);
   }
 }

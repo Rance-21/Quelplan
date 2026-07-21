@@ -51,7 +51,7 @@ pub async fn search_on_vndb(
     headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
 
     if let Some(token) = token {
-        let token = format!("Bearer {}", token);
+        let token = format!("Token {}", token);
         headers.insert(AUTHORIZATION, HeaderValue::from_str(&token).unwrap());
     }
 

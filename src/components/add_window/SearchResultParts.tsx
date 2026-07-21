@@ -7,11 +7,11 @@ import {
 import { useEffect, useState } from "react";
 import type { SearchedGame } from "../../api/Add";
 import { useI18n } from "../../lib/i18n";
-import { coverSource } from "./coverSource";
+import { coverSource } from "../../utils/coverSource";
 import {
   formatSearchResultDate,
   formatSearchResultScore,
-} from "./searchResultFormatting";
+} from "../../utils/searchResultFormatting";
 
 export function CandidateCover({
   image,

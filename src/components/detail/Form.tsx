@@ -96,56 +96,64 @@ export function DetailForm({
       className="no-scrollbar"
       style={{
         minHeight: 0,
-        display: "flex",
         flex: 1,
-        flexDirection: "column",
-        gap: "0.65rem",
         overflowY: "auto",
-        padding: "0.1rem 0.15rem 1.5rem",
       }}
     >
-      {editableFields.map((config) => (
-        <EditableGameField
-          key={config.field}
+      <div
+        className="qp-detail-form-content"
+        style={{
+          minWidth: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.65rem",
+          padding: "0.1rem 0.15rem 1.8rem",
+          boxSizing: "border-box",
+        }}
+      >
+        {editableFields.map((config) => (
+          <EditableGameField
+            key={config.field}
+            gameId={initialData.id}
+            config={config}
+            onSaved={onGameFieldChange}
+          />
+        ))}
+
+        <EditablePathField
           gameId={initialData.id}
-          config={config}
-          onSaved={onGameFieldChange}
+          initialPath={initialData.path}
+          field="exe_path"
+          label={t("detail.exePath.label")}
+          selectLabel={t("detail.exePath.select")}
+          filterName={t("detail.exePath.fileFilter")}
+          extensions={executableFileExtensions}
+          emptyMessage={t("detail.exePath.empty")}
+          savedMessage={t("detail.exePath.saved")}
+          onSaved={onGameExePathChange}
         />
-      ))}
 
-      <EditablePathField
-        gameId={initialData.id}
-        initialPath={initialData.path}
-        field="exe_path"
-        label={t("detail.exePath.label")}
-        selectLabel={t("detail.exePath.select")}
-        filterName={t("detail.exePath.fileFilter")}
-        extensions={executableFileExtensions}
-        emptyMessage={t("detail.exePath.empty")}
-        savedMessage={t("detail.exePath.saved")}
-        onSaved={onGameExePathChange}
-      />
+        <LinkExeField
+          game={initialData}
+          selectableLinkItems={selectableLinkItems}
+          onLinkExeChange={onLinkExeChange}
+        />
 
-      <LinkExeField
-        game={initialData}
-        selectableLinkItems={selectableLinkItems}
-        onLinkExeChange={onLinkExeChange}
-      />
+        <EditablePathField
+          gameId={initialData.id}
+          initialPath={initialData.cover}
+          field="cover"
+          label={t("detail.coverPath.label")}
+          selectLabel={t("detail.coverPath.select")}
+          filterName={t("detail.coverPath.fileFilter")}
+          extensions={imageFileExtensions}
+          emptyMessage={t("detail.coverPath.empty")}
+          savedMessage={t("detail.coverPath.saved")}
+          onSaved={(_, coverPath) => onGameFieldChange("cover", coverPath)}
+        />
 
-      <EditablePathField
-        gameId={initialData.id}
-        initialPath={initialData.cover}
-        field="cover"
-        label={t("detail.coverPath.label")}
-        selectLabel={t("detail.coverPath.select")}
-        filterName={t("detail.coverPath.fileFilter")}
-        extensions={imageFileExtensions}
-        emptyMessage={t("detail.coverPath.empty")}
-        savedMessage={t("detail.coverPath.saved")}
-        onSaved={(_, coverPath) => onGameFieldChange("cover", coverPath)}
-      />
-
-      <PlayTimeChart records={initialData.daily_play_times} />
+        <PlayTimeChart records={initialData.daily_play_times} />
+      </div>
     </div>
   );
 }

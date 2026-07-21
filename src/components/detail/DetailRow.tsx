@@ -18,16 +18,13 @@ export function DetailRow({
 }: DetailRowProps) {
   return (
     <div
-      className="qp-detail-row"
+      className="qp-detail-row qp-glass-panel"
       style={{
         display: "flex",
         flexShrink: 0,
         flexDirection: "column",
         overflow: "hidden",
-        border: "1px solid var(--qp-panel-border)",
         borderRadius: "0.9rem",
-        background: "var(--qp-panel-bg)",
-        boxShadow: "0 0.45rem 1.4rem rgba(0, 0, 0, 0.08)",
         ...style,
       }}
     >

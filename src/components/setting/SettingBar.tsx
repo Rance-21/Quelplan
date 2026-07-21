@@ -20,17 +20,14 @@ export function SettingBar({
 }: SettingBarProps) {
   return (
     <section
+      className="qp-setting-bar qp-glass-panel"
       style={{
         width: "100%",
         minHeight: "4.85rem",
         display: "flex",
         flexDirection: "column",
-        boxSizing: "border-box",
         overflow: "hidden",
-        border: "1px solid var(--qp-panel-border)",
         borderRadius: "1rem",
-        background: "var(--qp-panel-bg)",
-        boxShadow: "var(--qp-panel-shadow)",
         color: "var(--qp-text)",
         opacity: disabled ? 0.55 : 1,
         transition: "opacity 0.12s ease",

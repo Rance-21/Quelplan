@@ -55,20 +55,29 @@ async fn get_searched_games(
     if source_mask & SOURCE_BGM != 0 {
         let token = state.tokens.lock().unwrap().bgm.clone();
         let refresh_token = state.tokens.lock().unwrap().bgm_refresh.clone();
-        for game in search_on_bgm(&game_temp_name, token, refresh_token, state).await? {
+        for game in search_on_bgm(&game_temp_name, token, refresh_token, state)
+            .await
+            .unwrap_or_else(|_| Vec::new())
+        {
             search_results.push(game);
         }
     }
 
     if source_mask & SOURCE_VNDB != 0 {
         let token = state.tokens.lock().unwrap().vndb.clone();
-        for game in search_on_vndb(game_temp_name, token).await? {
+        for game in search_on_vndb(game_temp_name, token)
+            .await
+            .unwrap_or_else(|_| Vec::new())
+        {
             search_results.push(game);
         }
     }
 
     if source_mask & SOURCE_IGDB != 0 {
-        for game in search_on_igdb(game_temp_name, state).await? {
+        for game in search_on_igdb(game_temp_name, state)
+            .await
+            .unwrap_or_else(|_| Vec::new())
+        {
             search_results.push(game);
         }
     }

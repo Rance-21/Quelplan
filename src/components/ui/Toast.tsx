@@ -2,38 +2,25 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Check, LoaderCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import {
+  dismissToast,
+  getToastDuration,
+  showToast,
+  subscribeToToastEvents,
+  type ToastEvent,
+  type ToastIcon,
+  type ToastState,
+} from "./toastStore";
 
-const TOAST_DURATION = 3000;
+export { dismissToast, showToast } from "./toastStore";
+export type { ToastIcon } from "./toastStore";
+
 const toastErrorEvent = "toast-error";
-
-export type ToastIcon = "success" | "error" | "loading";
 
 interface ToastProps {
   message: string;
   icon: ToastIcon;
   visible: boolean;
-}
-
-interface ToastState {
-  id: number;
-  message: string;
-  icon: ToastIcon;
-}
-
-type ToastListener = (toast: ToastState) => void;
-
-const toastListeners = new Set<ToastListener>();
-let toastId = 0;
-
-export function showToast(message: string, icon: ToastIcon) {
-  const toast = {
-    id: toastId + 1,
-    message,
-    icon,
-  };
-
-  toastId = toast.id;
-  toastListeners.forEach((listener) => listener(toast));
 }
 
 const iconStyles: Record<
@@ -121,19 +108,26 @@ export function Toast({ message, icon, visible }: ToastProps) {
 }
 
 export function ToastViewport() {
-  const [toast, setToast] = useState<ToastState | null>(null);
-  const [visible, setVisible] = useState(false);
+  const [display, setDisplay] = useState<{
+    toast: ToastState | null;
+    visible: boolean;
+  }>({ toast: null, visible: false });
 
   useEffect(() => {
-    const listener: ToastListener = (nextToast) => {
-      setToast(nextToast);
-      setVisible(true);
+    const listener = (event: ToastEvent) => {
+      if (event.type === "show") {
+        setDisplay({ toast: event.toast, visible: true });
+        return;
+      }
+
+      setDisplay((current) =>
+        current.toast?.id === event.id
+          ? { ...current, visible: false }
+          : current,
+      );
     };
 
-    toastListeners.add(listener);
-    return () => {
-      toastListeners.delete(listener);
-    };
+    return subscribeToToastEvents(listener);
   }, []);
 
   useEffect(() => {
@@ -167,28 +161,37 @@ export function ToastViewport() {
   }, []);
 
   useEffect(() => {
-    if (!toast) return;
+    if (!display.toast) return;
+
+    if (!display.visible) {
+      const clearTimer = window.setTimeout(() => {
+        setDisplay((current) =>
+          current.toast?.id === display.toast?.id && !current.visible
+            ? { toast: null, visible: false }
+            : current,
+        );
+      }, 180);
+
+      return () => window.clearTimeout(clearTimer);
+    }
+
+    const duration = getToastDuration(display.toast.icon);
+    if (duration === null) return;
 
     const hideTimer = window.setTimeout(() => {
-      setVisible(false);
-    }, TOAST_DURATION);
-    const clearTimer = window.setTimeout(() => {
-      setToast((current) => (current?.id === toast.id ? null : current));
-    }, TOAST_DURATION + 180);
+      dismissToast(display.toast!.id);
+    }, duration);
 
-    return () => {
-      window.clearTimeout(hideTimer);
-      window.clearTimeout(clearTimer);
-    };
-  }, [toast]);
+    return () => window.clearTimeout(hideTimer);
+  }, [display]);
 
-  if (!toast) return null;
+  if (!display.toast) return null;
 
   return (
     <Toast
-      message={toast.message}
-      icon={toast.icon}
-      visible={visible}
+      message={display.toast.message}
+      icon={display.toast.icon}
+      visible={display.visible}
     />
   );
 }

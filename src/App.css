@@ -244,12 +244,16 @@ html[data-window-maximized="true"] .qp-app-frame {
   animation: qpWindowExit 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.qp-glass-panel,
 .qp-window-panel {
   box-sizing: border-box;
   border: 1px solid var(--qp-panel-border);
-  border-radius: 1.15rem;
   background: var(--qp-panel-bg);
   box-shadow: var(--qp-panel-shadow);
+}
+
+.qp-window-panel {
+  border-radius: 1.15rem;
 }
 
 .qp-page-surface {
@@ -602,7 +606,7 @@ button.qp-expanded-row:hover:not(:disabled) {
 }
 
 .qp-detail-page {
-  padding: 2.5rem 2.5rem 1.8rem 7.3rem;
+  padding: 2.5rem 2.5rem 0 7.3rem;
 }
 
 .qp-detail-hero {

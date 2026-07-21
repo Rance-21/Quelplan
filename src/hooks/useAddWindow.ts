@@ -14,7 +14,7 @@ import {
 import { addApp } from "../api/App";
 import type { FolderGame } from "../api/foldergames";
 import type { AddMode } from "../components/add_window/AddModeSelector";
-import { getDefaultGameName } from "../components/add_window/gameName";
+import { getDefaultGameName } from "../utils/gameName";
 import { showToast } from "../components/ui/Toast";
 import { useI18n } from "../lib/i18n";
 
@@ -58,7 +58,6 @@ export function useAddWindow({
   const [sources, setSources] = useState(initialSources);
   const [searchItems, setSearchItems] = useState<AddSearchItem[]>([]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [steamImportedCount, setSteamImportedCount] = useState(0);
   const [isCancelling, setIsCancelling] = useState(false);
   const [pendingSingleGamePath, setPendingSingleGamePath] = useState("");
   const [singleGameName, setSingleGameName] = useState("");
@@ -160,12 +159,10 @@ export function useAddWindow({
   };
 
   const handleSteamImport = async () => {
-    setSteamImportedCount(0);
     setPhase("steam-importing");
 
     try {
       await addSteamGames((game) => {
-        setSteamImportedCount((count) => count + 1);
         onGameAdded(game);
       });
       onClose();
@@ -238,7 +235,6 @@ export function useAddWindow({
     searchItems,
     expandedIndex,
     setExpandedIndex,
-    steamImportedCount,
     isCancelling,
     pendingSingleGamePath,
     singleGameName,

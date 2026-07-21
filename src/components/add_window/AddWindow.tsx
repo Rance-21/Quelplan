@@ -73,7 +73,6 @@ export function AddWindow({
             expandedIndex={addWindow.expandedIndex}
             isCancelling={addWindow.isCancelling}
             selectionCount={addWindow.selectionCount}
-            steamImportedCount={addWindow.steamImportedCount}
             onExpandedIndexChange={addWindow.setExpandedIndex}
             onCandidateSelect={addWindow.handleCandidateSelect}
             onResultDelete={addWindow.handleResultDelete}
