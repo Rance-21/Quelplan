@@ -131,6 +131,9 @@ export const Sidebar = memo(function Sidebar({
           onError={handleAvatarError}
           style={{
             position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
             objectFit: "cover",
             transition: "all 0.12s cubic-bezier(0.16, 1, 0.3, 1)",
             opacity: showBack ? 0 : 1,
