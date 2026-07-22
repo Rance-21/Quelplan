@@ -69,7 +69,7 @@ export function useDetailPage({
 
     void getApps()
       .then((appsData) => {
-        if (!disposed) setApps(appsData.apps || {});
+        if (!disposed) setApps(appsData.apps);
       })
       .catch(() => undefined);
 

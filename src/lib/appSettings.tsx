@@ -1,7 +1,6 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -13,6 +12,7 @@ import {
   updateSetting,
   type AppSettings,
 } from "../api/setting";
+import { useRequiredContext } from "./context";
 
 interface AppSettingsContextValue extends AppSettings {
   setAutoStart: (value: boolean) => void;
@@ -122,14 +122,5 @@ export function AppSettingsProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAppSettings(): AppSettingsContextValue {
-  const context = useContext(AppSettingsContext);
-  if (context) return context;
-
-  return {
-    ...defaultAppSettings,
-    setAutoStart: () => undefined,
-    setHideOnLaunch: () => undefined,
-    setCloseToTray: () => undefined,
-    setLaunchKey: () => undefined,
-  };
+  return useRequiredContext(AppSettingsContext, "AppSettingsProvider");
 }

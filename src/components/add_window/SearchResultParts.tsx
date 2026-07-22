@@ -30,15 +30,7 @@ export function CandidateCover({
     return (
       <div
         aria-label={name}
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "var(--qp-muted-text)",
-          background: "var(--qp-control-muted)",
-        }}
+        className="qp-candidate-cover is-placeholder"
       >
         <ImageOff size={24} strokeWidth={1.5} />
       </div>
@@ -49,51 +41,33 @@ export function CandidateCover({
     <img
       src={coverSource(image)}
       alt={name}
+      loading="lazy"
+      decoding="async"
       onError={() => setFailed(true)}
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "block",
-        objectFit: "cover",
-      }}
+      className="qp-candidate-cover"
     />
   );
 }
 
 export function CandidateMetrics({ game }: { game: SearchedGame }) {
   const { locale, t } = useI18n();
-  const metricStyle = {
-    minWidth: 0,
-    display: "flex",
-    alignItems: "center",
-    gap: "0.3rem",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  } as const;
 
   return (
-    <div
-      style={{
-        minWidth: 0,
-        display: "flex",
-        alignItems: "center",
-        gap: "0.85rem",
-        color: "var(--qp-muted-text)",
-        fontSize: "0.78rem",
-      }}
-    >
-      <span title={t("detail.metrics.score")} style={metricStyle}>
+    <div className="qp-candidate-metrics">
+      <span className="qp-candidate-metric" title={t("detail.metrics.score")}>
         <Star size={14} strokeWidth={1.8} />
         {formatSearchResultScore(game.score)}
       </span>
-      <span title={t("detail.metrics.publishDate")} style={metricStyle}>
+      <span
+        className="qp-candidate-metric"
+        title={t("detail.metrics.publishDate")}
+      >
         <CalendarDays size={14} strokeWidth={1.8} />
         {formatSearchResultDate(game.publish_date, locale)}
       </span>
       <span
+        className="qp-candidate-metric is-grow"
         title={game.developer || t("add.candidate.unknownDeveloper")}
-        style={{ ...metricStyle, flex: 1 }}
       >
         <Building2 size={14} strokeWidth={1.8} />
         {game.developer || t("add.candidate.unknownDeveloper")}

@@ -1,11 +1,11 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import { useRequiredContext } from "./context";
 
 const lightBackgroundStorageKey = "quelplan-light-background-path";
 const darkBackgroundStorageKey = "quelplan-dark-background-path";
@@ -22,8 +22,6 @@ const BackgroundSettingContext = createContext<BackgroundSettingValue | null>(
 );
 
 function readStoredBackgroundPath(storageKey: string) {
-  if (typeof window === "undefined") return "";
-
   return window.localStorage.getItem(storageKey) || "";
 }
 
@@ -68,13 +66,5 @@ export function BackgroundProvider({ children }: { children: ReactNode }) {
 }
 
 export function useBackgroundSettings() {
-  const context = useContext(BackgroundSettingContext);
-  if (context) return context;
-
-  return {
-    lightBackgroundPath: "",
-    darkBackgroundPath: "",
-    setLightBackgroundPath: () => undefined,
-    setDarkBackgroundPath: () => undefined,
-  };
+  return useRequiredContext(BackgroundSettingContext, "BackgroundProvider");
 }

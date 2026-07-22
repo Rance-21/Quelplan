@@ -27,11 +27,9 @@ export function AddButton({
     });
     if (!selectedPath) return;
 
+    setIsAdding(true);
     try {
-      setIsAdding(true);
       await onPathSelected(selectedPath, addMode);
-    } catch {
-      return;
     } finally {
       setIsAdding(false);
     }

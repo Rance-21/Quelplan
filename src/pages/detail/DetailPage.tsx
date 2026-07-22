@@ -11,7 +11,7 @@ interface DetailPageProps {
   onFolderGameUpdate: (id: number, patch: FolderGamePatch) => void;
 }
 
-export function DetailPage({ id, onFolderGameUpdate }: DetailPageProps) {
+export default function DetailPage({ id, onFolderGameUpdate }: DetailPageProps) {
   const {
     game,
     apps,

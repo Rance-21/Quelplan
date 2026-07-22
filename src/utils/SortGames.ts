@@ -3,6 +3,8 @@ import type { FolderGame } from "../api/foldergames";
 export type SortType = "name" | "time" | "score";
 export type SortOrder = "asc" | "desc";
 
+const nameCollator = new Intl.Collator("zh-CN");
+
 export function readSortType(value: string | null): SortType {
   return value === "time" || value === "score" ? value : "name";
 }
@@ -16,6 +18,8 @@ export function sortGames(
   type: SortType,
   order: SortOrder,
 ): FolderGame[] {
+  if (games.length < 2) return games;
+
   const direction = order === "asc" ? 1 : -1;
 
   return [...games].sort((firstGame, secondGame) => {
@@ -29,7 +33,7 @@ export function sortGames(
         comparison = firstGame.score - secondGame.score;
         break;
       case "name":
-        comparison = firstGame.name.localeCompare(secondGame.name, "zh-CN");
+        comparison = nameCollator.compare(firstGame.name, secondGame.name);
         break;
     }
 

@@ -1,13 +1,11 @@
 import {
   createContext,
-  useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import { showToast } from "../components/ui/Toast";
-import { translate } from "./i18n";
+import { useRequiredContext } from "./context";
 
 export type ThemeMode = "light" | "dark" | "system";
 type ResolvedThemeMode = "light" | "dark";
@@ -26,15 +24,11 @@ function isThemeMode(value: string | null): value is ThemeMode {
 }
 
 function getInitialMode(): ThemeMode {
-  if (typeof window === "undefined") return "system";
-
   const storedMode = window.localStorage.getItem(THEME_STORAGE_KEY);
   return isThemeMode(storedMode) ? storedMode : "system";
 }
 
 function getSystemMode(): ResolvedThemeMode {
-  if (typeof window === "undefined") return "light";
-
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
@@ -78,20 +72,5 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 }
 
 export function useTheme() {
-  const context = useContext(ThemeContext);
-  useEffect(() => {
-    if (!context) {
-      showToast(translate("toast.themeProviderMissing"), "error");
-    }
-  }, [context]);
-
-  if (context) return context;
-
-  return {
-    mode: "system" as const,
-    resolvedMode: getSystemMode(),
-    setMode: () => {
-      showToast(translate("toast.themeSwitchUnavailable"), "error");
-    },
-  };
+  return useRequiredContext(ThemeContext, "ThemeProvider");
 }

@@ -86,7 +86,7 @@ export function Toast({ message, icon, visible }: ToastProps) {
           width={14}
           height={14}
           strokeWidth={3}
-          className={icon === "loading" ? "animate-spin" : undefined}
+          className={icon === "loading" ? "qp-toast-spinner" : undefined}
         />
       </div>
 

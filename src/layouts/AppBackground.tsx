@@ -26,10 +26,7 @@ export const AppBackground = memo(function AppBackground({
   const backgroundSrc = customBackgroundPath
     ? convertFileSrc(customBackgroundPath)
     : defaultBackgroundSrc;
-  const isFocusPage =
-    currentPage === "Settings" ||
-    currentPage === "Detail" ||
-    isOverlayWindowOpen;
+  const isFocusPage = currentPage !== "Home" || isOverlayWindowOpen;
 
   return (
     <div
@@ -50,9 +47,7 @@ export const AppBackground = memo(function AppBackground({
           objectFit: "cover",
           filter: isFocusPage
             ? "var(--qp-focused-background-filter)"
-            : currentPage === "Home"
-              ? undefined
-              : "blur(0.12rem) saturate(0.92)",
+            : undefined,
         }}
       />
     </div>

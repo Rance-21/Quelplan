@@ -65,10 +65,11 @@ export function useAddWindow({
 
   const selections = useMemo<SearchSelection[]>(
     () =>
-      searchItems.flatMap(({ result, selectedIndex, cacheIndex }) =>
-        result.searched_games[selectedIndex]
-          ? [[cacheIndex, selectedIndex] as SearchSelection]
-          : [],
+      searchItems.map(
+        ({ selectedIndex, cacheIndex }): SearchSelection => [
+          cacheIndex,
+          selectedIndex,
+        ],
       ),
     [searchItems],
   );

@@ -14,7 +14,7 @@ interface FolderPageProps {
   onGameSelectDetail: (id: number) => void;
 }
 
-export function FolderPage({
+export default function FolderPage({
   folderState,
   onGameDeleted,
   onGameSelectMain,
@@ -40,77 +40,78 @@ export function FolderPage({
   const isWindowOpen = activeWindow !== null;
 
   return (
-    <div>
-      <div style={{ position: "absolute", inset: 0 }}>
+    <div
+      className="qp-page-surface"
+      style={{ position: "absolute", inset: 0 }}
+    >
+      <div
+        aria-hidden={isWindowOpen}
+        inert={isWindowOpen}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          paddingLeft: "4.8rem",
+          boxSizing: "border-box",
+        }}
+      >
         <div
-          aria-hidden={isWindowOpen}
-          inert={isWindowOpen}
           style={{
-            width: "100%",
-            height: "100%",
+            position: "relative",
+            paddingLeft: "2rem",
+            flexDirection: "row",
             display: "flex",
-            flexDirection: "column",
-            paddingLeft: "4.8rem",
-            boxSizing: "border-box",
+            alignItems: "center",
+            gap: "1rem",
+            width: "50%",
+            zIndex: 60,
+            paddingTop: "0.6rem",
           }}
         >
-          <div
-            style={{
-              position: "relative",
-              paddingLeft: "2rem",
-              flexDirection: "row",
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              width: "50%",
-              zIndex: 60,
-              paddingTop: "0.6rem",
-            }}
-          >
-            <SearchBox
-              value={searchValue}
-              onValueChange={handleSearchValueChange}
-              onSearch={handleSearchSubmit}
-            />
-            <SortButton onOpenSortWindow={handleOpenSortWindow} />
-            <AddButton onOpenAddWindow={handleOpenAddWindow} />
-          </div>
-
-          <FolderGrid
-            games={presentedGames}
-            onGameDeleted={onGameDeleted}
-            onGameSelectMain={onGameSelectMain}
-            onGameSelectDetail={onGameSelectDetail}
+          <SearchBox
+            value={searchValue}
+            onValueChange={handleSearchValueChange}
+            onSearch={handleSearchSubmit}
           />
+          <SortButton onOpenSortWindow={handleOpenSortWindow} />
+          <AddButton onOpenAddWindow={handleOpenAddWindow} />
         </div>
 
-        {activeWindow === "add" && (
-          <div
-            style={{ position: "absolute", inset: "0 0 0 4.8rem", zIndex: 100000 }}
-          >
-            <AddWindow
-              onClose={handleCloseFolderWindow}
-              isClosing={isFolderWindowClosing}
-              onGamesCommitted={handleGamesCommitted}
-              onGameAdded={handleGameAdded}
-              onFlowActiveChange={handleAddFlowActiveChange}
-            />
-          </div>
-        )}
-
-        {activeWindow === "sort" && (
-          <div
-            style={{ position: "absolute", inset: "0 0 0 4.8rem", zIndex: 100000 }}
-          >
-            <SortWindow
-              sortType={sortType}
-              sortOrder={sortOrder}
-              onSortChange={handleSortChange}
-              isClosing={isFolderWindowClosing}
-            />
-          </div>
-        )}
+        <FolderGrid
+          games={presentedGames}
+          onGameDeleted={onGameDeleted}
+          onGameSelectMain={onGameSelectMain}
+          onGameSelectDetail={onGameSelectDetail}
+        />
       </div>
+
+      {activeWindow === "add" && (
+        <div
+          style={{ position: "absolute", inset: "0 0 0 4.8rem", zIndex: 100000 }}
+        >
+          <AddWindow
+            onClose={handleCloseFolderWindow}
+            isClosing={isFolderWindowClosing}
+            onGamesCommitted={handleGamesCommitted}
+            onGameAdded={handleGameAdded}
+            onFlowActiveChange={handleAddFlowActiveChange}
+          />
+        </div>
+      )}
+
+      {activeWindow === "sort" && (
+        <div
+          style={{ position: "absolute", inset: "0 0 0 4.8rem", zIndex: 100000 }}
+        >
+          <SortWindow
+            sortType={sortType}
+            sortOrder={sortOrder}
+            onSortChange={handleSortChange}
+            isClosing={isFolderWindowClosing}
+          />
+        </div>
+      )}
     </div>
   );
 }

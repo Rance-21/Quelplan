@@ -16,11 +16,7 @@ export function SteamAddButton({
   const handleSteamAdd = async () => {
     if (disabled) return;
 
-    try {
-      await onSteamImport();
-    } catch {
-      return;
-    }
+    await onSteamImport();
   };
 
   return (

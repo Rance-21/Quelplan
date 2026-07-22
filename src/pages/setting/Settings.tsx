@@ -2,7 +2,7 @@ import { SettingBar } from "../../components/setting/SettingBar";
 import { useSettingsRows } from "../../hooks/useSettingsRows";
 import { useI18n } from "../../lib/i18n";
 
-export function SettingsPage() {
+export default function SettingsPage() {
   const settings = useSettingsRows();
   const { t } = useI18n();
 

@@ -28,7 +28,7 @@ export interface SearchedGame {
 
 export interface SearchResult {
   path: string;
-  searched_games: SearchedGame[];
+  searched_games: [SearchedGame, ...SearchedGame[]];
 }
 
 export type SearchSelection = [outsideIndex: number, insideIndex: number];

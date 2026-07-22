@@ -5,15 +5,7 @@ import { closeWindow } from "../api/Close";
 import { showApiError } from "../api/ToastError";
 import { useAppSettings } from "../lib/appSettings";
 
-function getAppWindow() {
-  try {
-    return getCurrentWindow();
-  } catch {
-    return null;
-  }
-}
-
-const appWindow = getAppWindow();
+const appWindow = getCurrentWindow();
 
 function syncMaximizedAttribute(maximized: boolean) {
   document.documentElement.dataset.windowMaximized = maximized
@@ -66,8 +58,6 @@ export const Topbar = memo(function Topbar({
   const isClosingRef = useRef(false);
 
   useEffect(() => {
-    if (!appWindow) return;
-
     let disposed = false;
     let removeResizeListener: (() => void) | undefined;
 
@@ -110,17 +100,14 @@ export const Topbar = memo(function Topbar({
   }, []);
 
   const handleMinimize = useCallback(() => {
-    if (!appWindow) return;
     void appWindow.minimize().catch(showApiError);
   }, []);
 
   const handleToggleMaximize = useCallback(() => {
-    if (!appWindow) return;
     void appWindow.toggleMaximize().catch(showApiError);
   }, []);
 
   const handleClose = useCallback(async () => {
-    if (!appWindow) return;
     if (isClosingRef.current) return;
 
     isClosingRef.current = true;

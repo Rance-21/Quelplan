@@ -9,10 +9,6 @@ export function useFolderSearch(games: FolderGame[]) {
   const [searchValue, setSearchValue] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const handleSearchValueChange = useCallback((value: string) => {
-    setSearchValue(value);
-  }, []);
-
   const handleSearchSubmit = useCallback(() => {
     setSearchKeyword(normalizeSearchText(searchValue));
   }, [searchValue]);
@@ -30,7 +26,7 @@ export function useFolderSearch(games: FolderGame[]) {
   return {
     searchValue,
     searchedGames,
-    handleSearchValueChange,
+    handleSearchValueChange: setSearchValue,
     handleSearchSubmit,
   };
 }

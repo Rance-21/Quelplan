@@ -23,6 +23,10 @@ export const FolderGrid = memo(function FolderGrid({
   const layout = useFolderGrid(scrollContainerRef, 10, gapRem);
   const columns = layout?.columns ?? null;
   const rowCount = columns === null ? 0 : Math.ceil(games.length / columns);
+  const itemWidth =
+    columns === null
+      ? "100%"
+      : `calc((100% - ${(columns - 1) * gapRem}rem) / ${columns})`;
 
   const virtualizer = useVirtualizer({
     count: rowCount,
@@ -60,7 +64,6 @@ export const FolderGrid = memo(function FolderGrid({
             const rowGames = games.slice(startIndex, startIndex + columns);
 
             return rowGames.map((game, indexInRow) => {
-              const itemWidth = `calc((100% - ${(columns - 1) * gapRem}rem) / ${columns})`;
               const leftPos = `calc(${indexInRow} * (${itemWidth} + ${gapRem}rem))`;
 
               return (

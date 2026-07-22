@@ -13,45 +13,13 @@ interface MetricItemProps {
 
 function MetricItem({ label, value }: MetricItemProps) {
   return (
-    <div
-      className="qp-detail-metric"
-      style={{
-        minWidth: 0,
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.42rem",
-        padding: "0.85rem 0.9rem",
-      }}
-    >
-      <span
-        title={label}
-        style={{
-          minWidth: 0,
-          overflow: "hidden",
-          color: "var(--qp-muted-text)",
-          fontSize: "0.69rem",
-          fontWeight: 680,
-          letterSpacing: "0.055em",
-          lineHeight: 1.2,
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
+    <div className="qp-detail-metric">
+      <span className="qp-detail-metric-label" title={label}>
         {label}
       </span>
       <span
+        className="qp-detail-metric-value"
         title={String(value || "--")}
-        style={{
-          minWidth: 0,
-          overflow: "hidden",
-          color: "var(--qp-text)",
-          fontSize: "clamp(0.92rem, 1.35vw, 1.12rem)",
-          fontWeight: 670,
-          letterSpacing: "-0.02em",
-          lineHeight: 1.25,
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
       >
         {value || "--"}
       </span>
@@ -98,16 +66,7 @@ export function DetailMetrics({ game }: { game: Game }) {
   ];
 
   return (
-    <div
-      className="qp-detail-metrics"
-      style={{
-        display: "grid",
-        overflow: "hidden",
-        border: "1px solid var(--qp-panel-border)",
-        borderRadius: "1rem",
-        background: "var(--qp-panel-subtle)",
-      }}
-    >
+    <div className="qp-detail-metrics">
       {metrics.map((metric) => (
         <MetricItem key={metric.label} {...metric} />
       ))}

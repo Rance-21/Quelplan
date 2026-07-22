@@ -23,12 +23,13 @@ const windowAnimationDuration = 200;
 
 export type FolderWindow = "add" | "sort";
 
-export function useFolderState() {
+export function useFolderState(enabled: boolean) {
   const [games, setGames] = useState<FolderGame[]>([]);
   const [activeWindow, setActiveWindow] = useState<FolderWindow | null>(null);
   const [isFolderWindowClosing, setIsFolderWindowClosing] = useState(false);
   const [isAddFlowActive, setIsAddFlowActive] = useState(false);
   const closeWindowTimerRef = useRef<number | null>(null);
+  const hasLoadedGamesRef = useRef(false);
   const {
     searchValue,
     searchedGames,
@@ -131,11 +132,9 @@ export function useFolderState() {
       .catch(() => undefined);
   }, []);
 
-  const handleAddFlowActiveChange = useCallback((active: boolean) => {
-    setIsAddFlowActive(active);
-  }, []);
-
   useEffect(() => {
+    if (!enabled || hasLoadedGamesRef.current) return;
+
     let isMounted = true;
 
     const fetchGames = async () => {
@@ -145,6 +144,7 @@ export function useFolderState() {
           setGames((currentGames) =>
             mergeFolderGames(initialGames, currentGames),
           );
+          hasLoadedGamesRef.current = true;
         }
       } catch {}
     };
@@ -154,7 +154,7 @@ export function useFolderState() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [enabled]);
 
   const presentedGames = useMemo(() => {
     return sortGames(searchedGames, sortType, sortOrder);
@@ -176,7 +176,7 @@ export function useFolderState() {
     handleOpenSortWindow,
     handleCloseFolderWindow,
     handleGamesCommitted,
-    handleAddFlowActiveChange,
+    handleAddFlowActiveChange: setIsAddFlowActive,
     handleGameAdded: handleGameAdd,
     handleFolderGameUpdated,
   };

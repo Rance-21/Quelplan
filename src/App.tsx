@@ -1,18 +1,22 @@
-import { useCallback, useEffect } from "react";
+import { lazy, Suspense, useCallback, useEffect } from "react";
 import { AppBackground } from "./layouts/AppBackground";
 import { Sidebar } from "./layouts/SideBar";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Topbar } from "./layouts/TopBar";
-import { DetailPage } from "./pages/detail/DetailPage";
-import { FolderPage } from "./pages/folder/Folder";
 import { MainPage } from "./pages/main/MainPage";
-import { SettingsPage } from "./pages/setting/Settings";
 import { useAppState } from "./hooks/App";
 import { useFolderState } from "./hooks/Folder";
 import { useAppUpdater } from "./hooks/useAppUpdater";
-import { UpdateWindow } from "./components/update_window/UpdateWindow";
+import { showApiError } from "./api/ToastError";
 import type { AppPage } from "./lib/navigation";
 import "./App.css";
+
+const DetailPage = lazy(() => import("./pages/detail/DetailPage"));
+const FolderPage = lazy(() => import("./pages/folder/Folder"));
+const SettingsPage = lazy(() => import("./pages/setting/Settings"));
+const UpdateWindow = lazy(
+  () => import("./components/update_window/UpdateWindow"),
+);
 
 export default function App() {
   const {
@@ -25,7 +29,9 @@ export default function App() {
     handleMain,
     handleGameDeleted,
   } = useAppState();
-  const folderState = useFolderState();
+  const folderState = useFolderState(
+    currentPage === "Folder" || currentPage === "Detail",
+  );
   const { activeWindow, isAddFlowActive, handleCloseFolderWindow } =
     folderState;
   const appUpdater = useAppUpdater();
@@ -97,17 +103,7 @@ export default function App() {
   );
 
   useEffect(() => {
-    const showWindow = async () => {
-      try {
-        const window = getCurrentWindow();
-        await window.show();
-        console.log("window shown");
-      } catch (error) {
-        console.error("failed to show window:", error);
-      }
-    };
-
-    void showWindow();
+    void getCurrentWindow().show().catch(showApiError);
   }, []);
 
   return (
@@ -148,51 +144,57 @@ export default function App() {
         }}
       >
         <div
+          key={currentPage}
+          className="qp-page-transition"
           aria-hidden={isUpdateWindowOpen}
           inert={isUpdateWindowOpen}
           style={{ position: "relative", width: "100%", height: "100%" }}
         >
-          {currentPage === "Home" && (
-            <MainPage mainGame={mainGame} onOpenDetail={handleDetail} />
-          )}
+          <Suspense fallback={null}>
+            {currentPage === "Home" && (
+              <MainPage mainGame={mainGame} onOpenDetail={handleDetail} />
+            )}
 
-          {currentPage === "Folder" && (
-            <FolderPage
-              folderState={folderState}
-              onGameDeleted={handleFolderGameDeleted}
-              onGameSelectMain={handleMain}
-              onGameSelectDetail={handleDetail}
-            />
-          )}
+            {currentPage === "Folder" && (
+              <FolderPage
+                folderState={folderState}
+                onGameDeleted={handleFolderGameDeleted}
+                onGameSelectMain={handleMain}
+                onGameSelectDetail={handleDetail}
+              />
+            )}
 
-          {currentPage === "Settings" && <SettingsPage />}
+            {currentPage === "Settings" && <SettingsPage />}
 
-          {currentPage === "Detail" && (
-            <DetailPage
-              id={detailId}
-              onFolderGameUpdate={folderState.handleFolderGameUpdated}
-            />
-          )}
+            {currentPage === "Detail" && (
+              <DetailPage
+                id={detailId}
+                onFolderGameUpdate={folderState.handleFolderGameUpdated}
+              />
+            )}
+          </Suspense>
         </div>
 
-        {isUpdateWindowOpen && updateInfo && (
-          <div
-            style={{
-              position: "absolute",
-              inset: "0 0 0 4.8rem",
-              zIndex: 200000,
-            }}
-          >
-            <UpdateWindow
-              updateInfo={updateInfo}
-              phase={updatePhase}
-              progress={updateProgress}
-              isClosing={isUpdateWindowClosing}
-              onCancel={() => dismissUpdate()}
-              onUpdate={() => void startUpdate()}
-            />
-          </div>
-        )}
+        <Suspense fallback={null}>
+          {isUpdateWindowOpen && updateInfo && (
+            <div
+              style={{
+                position: "absolute",
+                inset: "0 0 0 4.8rem",
+                zIndex: 200000,
+              }}
+            >
+              <UpdateWindow
+                updateInfo={updateInfo}
+                phase={updatePhase}
+                progress={updateProgress}
+                isClosing={isUpdateWindowClosing}
+                onCancel={() => dismissUpdate()}
+                onUpdate={() => void startUpdate()}
+              />
+            </div>
+          )}
+        </Suspense>
       </main>
     </div>
   );

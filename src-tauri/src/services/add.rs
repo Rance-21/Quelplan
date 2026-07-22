@@ -82,7 +82,11 @@ async fn get_searched_games(
         }
     }
 
-    Ok(search_results)
+    if search_results.is_empty() {
+        Err("Can't find any game!".to_string())
+    } else {
+        Ok(search_results)
+    }
 }
 
 fn get_game_temp_name(exe_path: &str) -> String {
@@ -219,7 +223,6 @@ fn check_dir(last_folder: &OsStr) -> bool {
 }
 
 pub fn add_steam_app(path: String, state: State<'_, AppState>, name: &str) -> Result<u32, String> {
-    // 假设: "D:/SteamLibrary/steamapps/common/Baldurs Gate 3/bin/bg3.exe"
     let parts: Vec<&str> = path.split("/steamapps/common/").collect();
 
     let mut steamapps_dir = PathBuf::from(parts[0]);

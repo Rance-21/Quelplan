@@ -20,11 +20,7 @@ export function BatchAddButton({
     const selectedDirectory = await selectDirectory();
     if (!selectedDirectory) return;
 
-    try {
-      await onDirectorySelected(selectedDirectory);
-    } catch {
-      return;
-    }
+    await onDirectorySelected(selectedDirectory);
   };
 
   return (

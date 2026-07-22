@@ -2,12 +2,12 @@ import {
   createContext,
   createElement,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import { useRequiredContext } from "./context";
 
 export type Locale = "zh" | "en";
 export type LocaleMode = "system" | Locale;
@@ -187,8 +187,6 @@ const translations = {
     "detail.link.saved": "关联启动顺序已保存",
     "confirm.deleteGame": "确定要删除这款游戏吗？",
     "confirm.importByfen": "导入会覆盖当前本地数据，确定继续吗？",
-    "toast.themeProviderMissing": "主题系统未初始化，请检查 ThemeProvider。",
-    "toast.themeSwitchUnavailable": "主题系统未初始化，暂时无法切换外观模式。",
     "toast.readMainGameFailed": "读取主界面游戏失败",
     "toast.getGameListFailed": "获取游戏列表失败",
     "toast.addGameSuccess": "游戏添加成功",
@@ -389,10 +387,6 @@ const translations = {
     "confirm.deleteGame": "Delete this game?",
     "confirm.importByfen":
       "Importing will overwrite the current local data. Continue?",
-    "toast.themeProviderMissing":
-      "Theme system is not initialized. Check ThemeProvider.",
-    "toast.themeSwitchUnavailable":
-      "Theme system is not initialized, so appearance mode cannot be changed.",
     "toast.readMainGameFailed": "Failed to read the main screen game",
     "toast.getGameListFailed": "Failed to get the game list",
     "toast.addGameSuccess": "Game added",
@@ -430,15 +424,11 @@ function isLocaleMode(value: string | null): value is LocaleMode {
 }
 
 function readStoredLocaleMode(): LocaleMode {
-  if (typeof window === "undefined") return "system";
-
   const storedMode = window.localStorage.getItem(localeStorageKey);
   return isLocaleMode(storedMode) ? storedMode : "system";
 }
 
 function getSystemLocale(): Locale {
-  if (typeof navigator === "undefined") return "zh";
-
   const languages =
     navigator.languages && navigator.languages.length > 0
       ? navigator.languages
@@ -519,13 +509,5 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 }
 
 export function useI18n() {
-  const context = useContext(I18nContext);
-  if (context) return context;
-
-  return {
-    localeMode: "system" as const,
-    locale: activeLocale,
-    setLocaleMode: () => undefined,
-    t: translate,
-  };
+  return useRequiredContext(I18nContext, "I18nProvider");
 }
