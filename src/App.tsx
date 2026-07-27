@@ -4,6 +4,9 @@ import { Sidebar } from "./layouts/SideBar";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Topbar } from "./layouts/TopBar";
 import { MainPage } from "./pages/main/MainPage";
+import SettingsPage from "./pages/setting/Settings";
+import FolderPage from "./pages/folder/Folder";
+import DetailPage from "./pages/detail/DetailPage";
 import { useAppState } from "./hooks/App";
 import { useFolderState } from "./hooks/Folder";
 import { useAppUpdater } from "./hooks/useAppUpdater";
@@ -11,9 +14,6 @@ import { showApiError } from "./api/ToastError";
 import type { AppPage } from "./lib/navigation";
 import "./App.css";
 
-const DetailPage = lazy(() => import("./pages/detail/DetailPage"));
-const FolderPage = lazy(() => import("./pages/folder/Folder"));
-const SettingsPage = lazy(() => import("./pages/setting/Settings"));
 const UpdateWindow = lazy(
   () => import("./components/update_window/UpdateWindow"),
 );

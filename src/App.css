@@ -43,9 +43,9 @@
   --qp-focused-background-filter: saturate(0.88);
   --qp-page-glass-top: rgba(248, 250, 252, 0.48);
   --qp-page-glass-bottom: rgba(248, 250, 252, 0.34);
-  --qp-panel-bg: rgba(255, 255, 255, 0.56);
-  --qp-panel-hover: rgba(255, 255, 255, 0.7);
-  --qp-panel-subtle: rgba(255, 255, 255, 0.24);
+  --qp-panel-bg: rgba(255, 255, 255, 0.68);
+  --qp-panel-hover: rgba(255, 255, 255, 0.78);
+  --qp-panel-subtle: rgba(255, 255, 255, 0.36);
   --qp-panel-border: rgba(255, 255, 255, 0.62);
   --qp-panel-shadow: 0 0.75rem 2.2rem rgba(15, 23, 42, 0.1);
   --qp-input-bg: rgba(255, 255, 255, 0.12);
@@ -65,7 +65,7 @@
   --qp-muted-text: #b8bec9;
   --qp-sidebar-bg: rgba(8, 12, 20, 0.66);
   --qp-setting-bar-bg: rgba(39, 39, 42, 0.64);
-  --qp-setting-bar-hover: rgba(63, 63, 70, 0.74);
+  --qp-setting-bar-hover: rgba(63, 63, 70, 0.84);
   --qp-control-bg: rgba(39, 39, 42, 0.86);
   --qp-control-hover: rgba(63, 63, 70, 0.92);
   --qp-control-active: rgba(82, 82, 91, 0.95);
@@ -78,12 +78,12 @@
   --qp-window-hover-bg: rgba(255, 255, 255, 0.8);
   --qp-primary-action-bg: #ffffff;
   --qp-primary-action-text: #18181b;
-  --qp-focused-background-filter: brightness(0.78) saturate(0.88);
+  --qp-focused-background-filter: brightness(0.5);
   --qp-page-glass-top: rgba(7, 11, 19, 0.58);
   --qp-page-glass-bottom: rgba(7, 11, 19, 0.44);
-  --qp-panel-bg: rgba(17, 23, 34, 0.64);
-  --qp-panel-hover: rgba(25, 33, 47, 0.76);
-  --qp-panel-subtle: rgba(255, 255, 255, 0.045);
+  --qp-panel-bg: rgba(17, 23, 34, 0.74);
+  --qp-panel-hover: rgba(25, 33, 47, 0.84);
+  --qp-panel-subtle: rgba(255, 255, 255, 0.08);
   --qp-panel-border: rgba(255, 255, 255, 0.1);
   --qp-panel-shadow: 0 0.9rem 2.5rem rgba(0, 0, 0, 0.2);
   --qp-input-bg: rgba(255, 255, 255, 0.035);
