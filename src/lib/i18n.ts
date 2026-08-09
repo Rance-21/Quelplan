@@ -33,6 +33,10 @@ const translations = {
     "common.mode.app": "应用",
     "settings.page.title": "设置",
     "settings.page.description": "按你的使用习惯调整外观、启动方式与数据管理。",
+    "settings.group.appearance": "外观",
+    "settings.group.launchWindow": "启动与窗口",
+    "settings.group.dataServices": "数据与服务",
+    "settings.group.about": "关于",
     "settings.language.title": "语言",
     "settings.language.description.system": "当前跟随系统，正在使用{language}",
     "settings.language.description.manual": "手动切换界面语言",
@@ -221,6 +225,10 @@ const translations = {
     "settings.page.title": "Settings",
     "settings.page.description":
       "Tune the appearance, launch behavior, and data management to your workflow.",
+    "settings.group.appearance": "Appearance",
+    "settings.group.launchWindow": "Launch & Window",
+    "settings.group.dataServices": "Data & Services",
+    "settings.group.about": "About",
     "settings.language.title": "Language",
     "settings.language.description.system":
       "Following system language, currently using {language}",

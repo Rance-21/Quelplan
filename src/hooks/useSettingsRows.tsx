@@ -36,6 +36,12 @@ export interface SettingRow {
   expandedContent?: ReactNode;
 }
 
+export interface SettingGroup {
+  id: string;
+  title: string;
+  rows: SettingRow[];
+}
+
 type ByfenOperation = "export" | "import";
 
 const projectUrl = "https://github.com/Rance-21/Quelplan";
@@ -74,7 +80,7 @@ const byfenActions = {
   }
 >;
 
-export function useSettingsRows(): SettingRow[] {
+export function useSettingsRows(): SettingGroup[] {
   const { mode, resolvedMode, setMode } = useTheme();
   const { localeMode, locale, setLocaleMode, t } = useI18n();
   const {
@@ -210,7 +216,7 @@ export function useSettingsRows(): SettingRow[] {
     },
   ] as const;
 
-  return [
+  const appearanceRows: SettingRow[] = [
     {
       id: "language",
       title: t("settings.language.title"),
@@ -245,6 +251,47 @@ export function useSettingsRows(): SettingRow[] {
         />
       ),
     },
+    ...backgroundRows.map(({ id, titleKey, path, setPath }) => ({
+      id,
+      title: t(titleKey),
+      description: path || t("settings.background.default"),
+      content: (
+        <BackgroundSelectButton
+          onClick={() => void handleSelectBackground(setPath)}
+        />
+      ),
+    })),
+  ];
+
+  const launchRows: SettingRow[] = [
+    {
+      id: "next-launch-key",
+      title: t("settings.launch.nextKey.title"),
+      description: t("settings.launch.nextKey.description"),
+      content: (
+        <LaunchKeyButton
+          launchKey={launchKey}
+          onLaunchKeyChange={setLaunchKey}
+        />
+      ),
+    },
+    ...toggleRows.map(
+      ({ id, titleKey, descriptionKey, value, onChange }) => ({
+        id,
+        title: t(titleKey),
+        description: t(descriptionKey),
+        content: (
+          <SettingSwitch
+            checked={value}
+            onChange={onChange}
+            label={t(titleKey)}
+          />
+        ),
+      }),
+    ),
+  ];
+
+  const dataRows: SettingRow[] = [
     {
       id: "tokens",
       title: t("settings.tokens.title"),
@@ -279,41 +326,6 @@ export function useSettingsRows(): SettingRow[] {
       expanded: isTokensExpanded,
       expandedContent: <TokenSettingsPanel />,
     },
-    ...backgroundRows.map(({ id, titleKey, path, setPath }) => ({
-      id,
-      title: t(titleKey),
-      description: path || t("settings.background.default"),
-      content: (
-        <BackgroundSelectButton
-          onClick={() => void handleSelectBackground(setPath)}
-        />
-      ),
-    })),
-    {
-      id: "next-launch-key",
-      title: t("settings.launch.nextKey.title"),
-      description: t("settings.launch.nextKey.description"),
-      content: (
-        <LaunchKeyButton
-          launchKey={launchKey}
-          onLaunchKeyChange={setLaunchKey}
-        />
-      ),
-    },
-    ...toggleRows.map(
-      ({ id, titleKey, descriptionKey, value, onChange }) => ({
-        id,
-        title: t(titleKey),
-        description: t(descriptionKey),
-        content: (
-          <SettingSwitch
-            checked={value}
-            onChange={onChange}
-            label={t(titleKey)}
-          />
-        ),
-      }),
-    ),
     ...transferRows.map(
       ({
         id,
@@ -336,6 +348,9 @@ export function useSettingsRows(): SettingRow[] {
         ),
       }),
     ),
+  ];
+
+  const aboutRows: SettingRow[] = [
     {
       id: "project-url",
       title: t("settings.project.title"),
@@ -365,6 +380,29 @@ export function useSettingsRows(): SettingRow[] {
           <ExternalLink size={15} aria-hidden="true" />
         </button>
       ),
+    },
+  ];
+
+  return [
+    {
+      id: "appearance",
+      title: t("settings.group.appearance"),
+      rows: appearanceRows,
+    },
+    {
+      id: "launch-window",
+      title: t("settings.group.launchWindow"),
+      rows: launchRows,
+    },
+    {
+      id: "data-services",
+      title: t("settings.group.dataServices"),
+      rows: dataRows,
+    },
+    {
+      id: "about",
+      title: t("settings.group.about"),
+      rows: aboutRows,
     },
   ];
 }

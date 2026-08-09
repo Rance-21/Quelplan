@@ -90,17 +90,13 @@ pub async fn launch_game_chain(
                         },
                         Some(steam_id) => match launch_steam_app(steam_id) {
                             Ok(()) => {
-                                let name = path
-                                    .to_string()
-                                    .split('/')
-                                    .last()
-                                    .unwrap_or_else(|| "")
-                                    .to_string();
+                                let exe_path = path.to_string();
 
                                 tokio::spawn(async move {
                                     let background_state = app_handle_clone.state::<AppState>();
                                     let _ =
-                                        record_steam_time(&background_state, &name, game_id).await;
+                                        record_steam_time(&background_state, &exe_path, game_id)
+                                            .await;
                                 });
                             }
                             Err(_) => {

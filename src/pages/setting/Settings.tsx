@@ -3,7 +3,7 @@ import { useSettingsRows } from "../../hooks/useSettingsRows";
 import { useI18n } from "../../lib/i18n";
 
 export default function SettingsPage() {
-  const settings = useSettingsRows();
+  const settingGroups = useSettingsRows();
   const { t } = useI18n();
 
   return (
@@ -45,19 +45,36 @@ export default function SettingsPage() {
           </p>
         </header>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.72rem" }}>
-          {settings.map((item) => (
-            <SettingBar
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              disabled={item.disabled}
-              expanded={item.expanded}
-              expandedContent={item.expandedContent}
-            >
-              {item.content}
-            </SettingBar>
-          ))}
+        <div className="qp-settings-groups">
+          {settingGroups.map((group) => {
+            const titleId = `qp-settings-group-${group.id}`;
+
+            return (
+              <section
+                key={group.id}
+                className="qp-settings-group"
+                aria-labelledby={titleId}
+              >
+                <h2 id={titleId} className="qp-settings-group-title">
+                  {group.title}
+                </h2>
+                <div className="qp-settings-group-card qp-glass-panel">
+                  {group.rows.map((item) => (
+                    <SettingBar
+                      key={item.id}
+                      title={item.title}
+                      description={item.description}
+                      disabled={item.disabled}
+                      expanded={item.expanded}
+                      expandedContent={item.expandedContent}
+                    >
+                      {item.content}
+                    </SettingBar>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       </div>
     </div>

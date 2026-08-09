@@ -19,15 +19,14 @@ export function SettingBar({
   expandedContent,
 }: SettingBarProps) {
   return (
-    <section
-      className="qp-setting-bar qp-glass-panel"
+    <div
+      className="qp-setting-bar"
       style={{
         width: "100%",
         minHeight: "4.85rem",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        borderRadius: "1rem",
         color: "var(--qp-text)",
         opacity: disabled ? 0.55 : 1,
         transition: "opacity 0.12s ease",
@@ -95,6 +94,6 @@ export function SettingBar({
           {expandedContent}
         </ExpandableSection>
       )}
-    </section>
+    </div>
   );
 }

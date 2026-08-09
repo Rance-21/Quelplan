@@ -3,6 +3,7 @@ use crate::services::launch::GameProcess;
 use crate::services::wal::{update_daily_play_time_wal, update_play_time_wal};
 use crate::state::AppState;
 use chrono::{Datelike, Local, NaiveDate};
+use std::path::Path;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use sysinfo::System;
 use tauri::State;
@@ -90,14 +91,43 @@ pub fn parse_steam_date(date_str: &str) -> Option<u64> {
 
 pub async fn record_steam_time(
     state: &State<'_, AppState>,
-    name: &str,
+    exe_path: &str,
     id: u32,
 ) -> Result<(), String> {
-    let name = name.to_string();
+    let process_name = Path::new(exe_path)
+        .file_name()
+        .ok_or_else(|| format!("无法从 Steam 游戏路径中读取进程名: {}", exe_path))?
+        .to_os_string();
 
-    let play_time = task::spawn_blocking(move || {
+    let (play_date, play_time) = task::spawn_blocking(move || -> Result<(u64, u64), String> {
         let mut sys = System::new_all();
+        let wait_started_at = Instant::now();
+
+        loop {
+            sys.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+
+            let is_running = sys
+                .processes()
+                .values()
+                .any(|process| process.name().eq_ignore_ascii_case(&process_name));
+
+            if is_running {
+                break;
+            }
+
+            if wait_started_at.elapsed() >= Duration::from_secs(60) {
+                return Err(format!(
+                    "等待 Steam 游戏进程启动超时: {}",
+                    process_name.to_string_lossy()
+                ));
+            }
+
+            std::thread::sleep(Duration::from_secs(2));
+        }
+
+        let started_at = Local::now();
         let start_time = Instant::now();
+
         loop {
             std::thread::sleep(Duration::from_secs(2));
             sys.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
@@ -105,27 +135,26 @@ pub async fn record_steam_time(
             let is_running = sys
                 .processes()
                 .values()
-                .any(|p| p.name().eq_ignore_ascii_case(&name));
+                .any(|process| process.name().eq_ignore_ascii_case(&process_name));
 
             if !is_running {
                 break;
             }
         }
 
-        start_time.elapsed().as_secs()
+        let play_date = (started_at.year() as u64 * 10000)
+            + (started_at.month() as u64 * 100)
+            + (started_at.day() as u64);
+
+        Ok((play_date, start_time.elapsed().as_secs()))
     })
     .await
-    .map_err(|e| format!("后台追踪线程崩溃: {}", e))?;
-
-    let started_at = Local::now();
+    .map_err(|e| format!("后台追踪线程崩溃: {}", e))??;
 
     let mut gamedata = state.game_data.lock().unwrap();
     let game = gamedata.games.get_mut(&id).ok_or("未找到游戏")?;
     game.play_time += play_time;
 
-    let play_date: u64 = (started_at.year() as u64 * 10000)
-        + (started_at.month() as u64 * 100)
-        + (started_at.day() as u64);
     update_daily_play_time(game, play_date, play_time);
 
     update_daily_play_time_wal(&state, id, play_date, play_time)?;

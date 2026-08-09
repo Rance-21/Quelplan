@@ -201,6 +201,50 @@ pub fn dfs_add_games(dir: &Path, sender: &Sender<String>) {
     }
 }
 
+pub fn find_game_executable(dir: &Path) -> Option<PathBuf> {
+    let entries = fs::read_dir(dir).ok()?.flatten().collect::<Vec<_>>();
+
+    // 优先使用游戏安装目录当前层级中的可执行文件。
+    for entry in &entries {
+        let path = entry.path();
+        if !path.is_file() {
+            continue;
+        }
+
+        let is_executable = path
+            .extension()
+            .map(|extension| extension.to_string_lossy().eq_ignore_ascii_case("exe"))
+            .unwrap_or(false);
+        if !is_executable {
+            continue;
+        }
+
+        let file_name = path.file_name().unwrap_or(OsStr::new(""));
+        if !check_exe(file_name) {
+            return Some(path);
+        }
+    }
+
+    // 当前层级没有候选项时，再依次递归子目录并返回首个结果。
+    for entry in &entries {
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+
+        let directory_name = path.file_name().unwrap_or(OsStr::new(""));
+        if check_dir(directory_name) {
+            continue;
+        }
+
+        if let Some(executable) = find_game_executable(&path) {
+            return Some(executable);
+        }
+    }
+
+    None
+}
+
 #[inline]
 fn check_exe(file_name: &OsStr) -> bool {
     let name_lower = file_name.to_string_lossy().to_ascii_lowercase();

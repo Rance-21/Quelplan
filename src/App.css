@@ -767,6 +767,30 @@ button.qp-expanded-row:hover:not(:disabled) {
   padding: 4.7rem 2.5rem 2.5rem 7.3rem;
 }
 
+.qp-settings-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.qp-settings-group-title {
+  margin: 0 0 0.5rem 0.15rem;
+  color: var(--qp-text);
+  font-size: 0.82rem;
+  font-weight: 720;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+.qp-settings-group-card {
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.qp-setting-bar + .qp-setting-bar {
+  border-top: 1px solid var(--qp-panel-border);
+}
+
 .qp-settings-page .qp-action-button,
 .qp-settings-page .qp-action-icon-button,
 .qp-detail-page .qp-action-icon-button {

@@ -1,5 +1,6 @@
 use crate::db::steam::{load_steam_game_index, save_steam_game_index};
 use crate::models::{DailyPlayTime, FolderGame, Game, LinkExe};
+use crate::services::add::find_game_executable;
 use crate::services::wal::add_game_wal;
 use crate::state::AppState;
 use crate::utils::cover::find_extension;
@@ -19,7 +20,7 @@ use winreg::RegKey;
 
 struct SteamAppInfo {
     appid: u32,
-    launch_path: String,
+    exe_path: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -118,10 +119,7 @@ pub async fn get_steam_games(state: State<'_, AppState>, window: Window) -> Resu
         });
 
         let link_exe = [
-            LinkExe::new(
-                Arc::from(app_info.launch_path.clone()),
-                Some(app_info.appid),
-            ),
+            LinkExe::new(Arc::from(app_info.exe_path.clone()), Some(app_info.appid)),
             LinkExe::empty(),
             LinkExe::empty(),
         ];
@@ -135,7 +133,7 @@ pub async fn get_steam_games(state: State<'_, AppState>, window: Window) -> Resu
                 last_played: 0,
                 play_time: 0,
                 added_time: get_current_timestamp(),
-                path: Arc::from(app_info.launch_path),
+                path: Arc::from(app_info.exe_path),
                 developer: Arc::from(steam_data.developers.join(",")),
                 publish_date: parse_steam_date(&steam_data.release_date.date).unwrap_or(0),
                 score: steam_data
@@ -287,7 +285,7 @@ fn get_acf_info(steam_apps_path: &PathBuf, tx: &mpsc::Sender<SteamAppInfo>) -> R
     if cfg!(debug_assertions) {
         println!("SteamApps目录: {:?}", steam_apps_path);
     }
-    let entries = fs::read_dir(steam_apps_path).map_err(|e| e.to_string())?;
+    let entries = fs::read_dir(&steam_apps_path).map_err(|e| e.to_string())?;
     let entries_vec: Vec<_> = entries.flatten().collect();
 
     for entry in &entries_vec {
@@ -299,36 +297,54 @@ fn get_acf_info(steam_apps_path: &PathBuf, tx: &mpsc::Sender<SteamAppInfo>) -> R
         if next_dir.is_file() {
             if let Some(ext) = next_dir.extension() {
                 if ext.to_string_lossy().to_lowercase() == "acf" {
-                    if let Ok(content) = fs::read_to_string(next_dir) {
-                        let mut app_info = SteamAppInfo {
-                            appid: 0,
-                            launch_path: String::new(),
-                        };
+                    if let Ok(content) = fs::read_to_string(&next_dir) {
+                        let mut appid = None;
+                        let mut install_dir_name = None;
 
-                        let mut cnt = 0;
                         for line in content.lines() {
-                            if line.contains("\"LauncherPath\"") {
-                                let path: Vec<&str> = line.split('"').collect();
-                                app_info.launch_path = path[3].to_string();
-                                cnt += 1;
-                            } else if line.contains("\"appid\"") {
-                                let id: Vec<&str> = line.split('"').collect();
-                                app_info.appid = id[3].parse::<u32>().unwrap_or_else(|_| 0);
-                                if cfg!(debug_assertions) {
-                                    println!("Steam AppId: {} ", app_info.appid);
-                                }
-                                cnt += 1;
+                            let values = line.split('"').collect::<Vec<_>>();
+                            if values.len() < 4 {
+                                continue;
                             }
 
-                            if cnt == 2 {
+                            if line.contains("\"appid\"") {
+                                appid = values[3].parse::<u32>().ok();
+                            } else if line.contains("\"installdir\"") {
+                                install_dir_name = Some(values[3].to_string());
+                            }
+
+                            if appid.is_some() && install_dir_name.is_some() {
                                 break;
                             }
                         }
 
-                        //管道Appinfo
-                        match tx.blocking_send(app_info) {
-                            Ok(()) => {}
-                            Err(_) => continue,
+                        let (Some(appid), Some(install_dir_name)) = (appid, install_dir_name)
+                        else {
+                            if cfg!(debug_assertions) {
+                                println!("Steam ACF 缺少 appid 或 installdir: {:?}", next_dir);
+                            }
+                            continue;
+                        };
+
+                        let install_dir = steam_apps_path.join("common").join(install_dir_name);
+                        let Some(exe_path) = find_game_executable(&install_dir) else {
+                            if cfg!(debug_assertions) {
+                                println!("Steam 游戏目录中未找到可执行文件: {:?}", install_dir);
+                            }
+                            continue;
+                        };
+
+                        if cfg!(debug_assertions) {
+                            println!("Steam AppId: {}, 游戏程序: {:?}", appid, exe_path);
+                        }
+
+                        let app_info = SteamAppInfo {
+                            appid,
+                            exe_path: exe_path.to_string_lossy().into_owned(),
+                        };
+
+                        if tx.blocking_send(app_info).is_err() {
+                            return Ok(());
                         }
                     }
                 }

@@ -12,13 +12,32 @@ use crate::commands::close::save_full_snapshot_on_close;
 use crate::models::SearchCache;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
-use tauri::Manager;
+use tauri::{AppHandle, Manager};
 use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_autostart::ManagerExt;
 
+fn show_main_window(app: &AppHandle) {
+    let Some(window) = app.get_webview_window("main") else {
+        return;
+    };
+
+    let _ = window.show();
+    let _ = window.unminimize();
+    let _ = window.set_focus();
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+
+    #[cfg(desktop)]
+    let builder = builder.plugin(tauri_plugin_single_instance::init(
+        |app, _args, _cwd| {
+            show_main_window(app);
+        },
+    ));
+
+    builder
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_opener::init())
@@ -63,9 +82,7 @@ pub fn run() {
                         app.exit(0);
                     }
                     "show" => {
-                        let window = app.get_webview_window("main").unwrap();
-                        window.show().unwrap();
-                        window.set_focus().unwrap();
+                        show_main_window(app);
                     }
                     _ => {
                         1;
