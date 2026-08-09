@@ -1,5 +1,6 @@
 use tauri::{Runtime, WebviewWindow, Window};
 
+// Keep this value in sync with --qp-window-radius in src/App.css.
 const WINDOW_RADIUS_CSS_PX: f64 = 16.0;
 
 pub fn apply<R: Runtime>(window: &Window<R>) {
@@ -38,10 +39,7 @@ mod windows_impl {
         Win32::{
             Foundation::{COLORREF, HWND},
             Graphics::{
-                Dwm::{
-                    DwmSetWindowAttribute, DWMWA_BORDER_COLOR, DWMWA_WINDOW_CORNER_PREFERENCE,
-                    DWMWCP_ROUND,
-                },
+                Dwm::{DwmSetWindowAttribute, DWMWA_BORDER_COLOR},
                 Gdi::{CreateRoundRectRgn, DeleteObject, SetWindowRgn, HGDIOBJ},
             },
             UI::WindowsAndMessaging::IsZoomed,
@@ -77,23 +75,15 @@ mod windows_impl {
         get_size: impl FnOnce() -> Result<tauri::PhysicalSize<u32>, String>,
         get_scale_factor: impl FnOnce() -> Result<f64, String>,
     ) -> Result<(), String> {
-        // Keep the native Windows 11 hint and border suppression, then apply a
-        // region everywhere so the custom radius is not capped by DWM's fixed
-        // corner size and stays identical to the CSS frame.
-        let _ = apply_dwm_rounding(hwnd);
+        // SetWindowRgn is the single native source of window rounding. Keeping
+        // DWM's corner preference enabled as well produces a second curve.
+        suppress_dwm_border(hwnd);
 
         apply_rounded_region(hwnd, get_size()?, get_scale_factor()?)
     }
 
-    fn apply_dwm_rounding(hwnd: HWND) -> windows::core::Result<()> {
+    fn suppress_dwm_border(hwnd: HWND) {
         unsafe {
-            DwmSetWindowAttribute(
-                hwnd,
-                DWMWA_WINDOW_CORNER_PREFERENCE,
-                &DWMWCP_ROUND as *const _ as *const c_void,
-                size_of_val(&DWMWCP_ROUND) as u32,
-            )?;
-
             let _ = DwmSetWindowAttribute(
                 hwnd,
                 DWMWA_BORDER_COLOR,
@@ -101,8 +91,6 @@ mod windows_impl {
                 size_of::<COLORREF>() as u32,
             );
         }
-
-        Ok(())
     }
 
     fn apply_rounded_region(
@@ -159,6 +147,7 @@ mod windows_impl {
         #[test]
         fn corner_diameter_tracks_display_scale() {
             assert_eq!(ellipse_diameter(1.0), 32);
+            assert_eq!(ellipse_diameter(1.25), 40);
             assert_eq!(ellipse_diameter(1.5), 48);
             assert_eq!(ellipse_diameter(2.0), 64);
         }

@@ -6,6 +6,16 @@
 
 Quelplan is a local game library manager and launcher for Windows. It helps you organize games, retrieve game information, track playtime, and launch local or Steam games from one place.
 
+## Screenshots
+
+### Game Library
+
+![Quelplan game library](docs/screenshots/library.png)
+
+### Game Details
+
+![Quelplan game details](docs/screenshots/game-details.png)
+
 ## Features
 
 - Add individual games, scan directories in batches, or import a Steam library.
@@ -46,7 +56,7 @@ pnpm tauri build
 ## TODO
 
 - Add Epic Games library import.
-- Redesign the settings interface with categorized sections, reset-to-default controls, version information, manual update checks, and clearer token and authorization status.
+- Redesign the settings interface with reset-to-default controls, version information, manual update checks, and clearer token and authorization status.
 - Add filters for favorite and completed games.
 - Detect duplicate games.
 - Improve backup and restore reliability and data migration compatibility between future versions.

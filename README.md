@@ -6,6 +6,16 @@
 
 Quelplan 是一款面向 Windows 的本地游戏库管理与启动工具，用于整理游戏、补充游戏信息、记录游玩时间，并从一个界面启动本地或 Steam 游戏。
 
+## 界面预览
+
+### 游戏库
+
+![Quelplan 游戏库](docs/screenshots/library.png)
+
+### 游戏详情
+
+![Quelplan 游戏详情](docs/screenshots/game-details.png)
+
 ## 功能
 
 - 支持单个游戏、目录批量扫描和 Steam 游戏库导入。
@@ -46,7 +56,7 @@ pnpm tauri build
 ## TODO
 
 - 支持 Epic Games 游戏库导入。
-- 重构设置界面：分类展示、恢复默认设置、显示版本与手动检查更新，并改善 Token 和授权状态管理。
+- 重构设置界面：恢复默认设置、显示版本与手动检查更新，并改善 Token 和授权状态管理。
 - 增加收藏及已完成状态筛选。
 - 增加重复游戏检测。
 - 提升备份恢复可靠性与后续版本的数据迁移兼容性。
