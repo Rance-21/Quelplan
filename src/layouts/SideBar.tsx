@@ -172,7 +172,7 @@ export const Sidebar = memo(function Sidebar({
       >
         <NavButton
           icon={FolderHeart}
-          isActive={activeMenu === "Folder"}
+          isActive={activeMenu === "Folder" || activeMenu === "Add"}
           onClick={handleFolderClick}
           disabled={interactionDisabled}
         />

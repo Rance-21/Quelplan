@@ -43,13 +43,14 @@ pub fn update_daily_play_time(game: &mut Game, play_date: u64, play_time: u64) {
     }
 
     //找最老的，直接替换
-    for daily_play in game.daily_play_times.iter_mut() {
-        if play_date > daily_play.play_date {
-            *daily_play = DailyPlayTime {
-                play_date,
-                play_time,
-            };
-            return;
+    let oldest_record = game
+        .daily_play_times
+        .iter_mut()
+        .min_by_key(|record| record.play_date);
+    oldest_record.map(|record| {
+        *record = DailyPlayTime {
+            play_date,
+            play_time,
         }
-    }
+    });
 }

@@ -9,6 +9,7 @@ import FolderPage from "./pages/folder/Folder";
 import DetailPage from "./pages/detail/DetailPage";
 import { useAppState } from "./hooks/App";
 import { useFolderState } from "./hooks/Folder";
+import { useAddGameFlow } from "./hooks/useAddGameFlow";
 import { useAppUpdater } from "./hooks/useAppUpdater";
 import { showApiError } from "./api/ToastError";
 import type { AppPage } from "./lib/navigation";
@@ -17,6 +18,7 @@ import "./App.css";
 const UpdateWindow = lazy(
   () => import("./components/update_window/UpdateWindow"),
 );
+const AddGamePage = lazy(() => import("./pages/add/AddGamePage"));
 
 export default function App() {
   const {
@@ -30,29 +32,37 @@ export default function App() {
     handleGameDeleted,
   } = useAppState();
   const folderState = useFolderState(
-    currentPage === "Folder" || currentPage === "Detail",
+    currentPage === "Folder" || currentPage === "Detail" || currentPage === "Add",
   );
-  const { activeWindow, isAddFlowActive, handleCloseFolderWindow } =
+  const { activeWindow, handleCloseFolderWindow } =
     folderState;
+  const addFlow = useAddGameFlow({
+    onGamesCommitted: folderState.handleGamesCommitted,
+    onGameAdded: folderState.handleGameAdded,
+  });
   const appUpdater = useAppUpdater();
   const {
     updateInfo,
     phase: updatePhase,
     progress: updateProgress,
-    isOpen: isUpdateWindowOpen,
+    isOpen: hasPendingUpdate,
     isBusy: isUpdateBusy,
     isClosing: isUpdateWindowClosing,
     dismissUpdate,
     startUpdate,
   } = appUpdater;
+  const isUpdateWindowOpen = hasPendingUpdate && currentPage !== "Add";
   const handlePageChange = useCallback(
-    (page: AppPage) => {
+    async (page: AppPage) => {
+      if (addFlow.isWorking) return;
       if (isUpdateWindowOpen) {
         if (isUpdateBusy) return;
         dismissUpdate(true);
       }
+      if (currentPage === "Add" && page !== "Add") {
+        if (!(await addFlow.reset(true))) return;
+      }
       if (currentPage === "Folder" && activeWindow !== null) {
-        if (activeWindow === "add" && isAddFlowActive) return;
         if (page === "Folder") {
           handleCloseFolderWindow();
           return;
@@ -67,19 +77,24 @@ export default function App() {
       currentPage,
       dismissUpdate,
       handleCloseFolderWindow,
-      isAddFlowActive,
+      addFlow.isWorking,
+      addFlow.reset,
       isUpdateBusy,
       isUpdateWindowOpen,
     ],
   );
   const handleBack = useCallback(() => {
+    if (addFlow.isWorking) return;
     if (isUpdateWindowOpen) {
       if (isUpdateBusy) return;
       dismissUpdate();
       return;
     }
+    if (currentPage === "Add") {
+      void handlePageChange("Folder");
+      return;
+    }
     if (currentPage === "Folder" && activeWindow !== null) {
-      if (activeWindow === "add" && isAddFlowActive) return;
       handleCloseFolderWindow();
       return;
     }
@@ -89,7 +104,8 @@ export default function App() {
     currentPage,
     dismissUpdate,
     handleCloseFolderWindow,
-    isAddFlowActive,
+    addFlow.isWorking,
+    handlePageChange,
     isUpdateBusy,
     isUpdateWindowOpen,
     navigateBack,
@@ -126,13 +142,13 @@ export default function App() {
           (currentPage === "Folder" && activeWindow !== null)
         }
       />
-      <Topbar closeDisabled={isUpdateBusy} />
+      <Topbar closeDisabled={isUpdateBusy || addFlow.isWorking} />
       <Sidebar
         activeMenu={currentPage}
         onMenuClick={handlePageChange}
         onBack={handleBack}
         forceBack={isUpdateWindowOpen}
-        interactionDisabled={isUpdateBusy}
+        interactionDisabled={isUpdateBusy || addFlow.isWorking}
       />
 
       <main
@@ -161,10 +177,15 @@ export default function App() {
                 onGameDeleted={handleFolderGameDeleted}
                 onGameSelectMain={handleMain}
                 onGameSelectDetail={handleDetail}
+                onAddGames={() => void handlePageChange("Add")}
               />
             )}
 
             {currentPage === "Settings" && <SettingsPage />}
+
+            {currentPage === "Add" && (
+              <AddGamePage flow={addFlow} onBack={() => void handlePageChange("Folder")} />
+            )}
 
             {currentPage === "Detail" && (
               <DetailPage

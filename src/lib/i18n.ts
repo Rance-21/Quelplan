@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { useRequiredContext } from "./context";
+import { addGameTranslations } from "./addGameTranslations";
 
 export type Locale = "zh" | "en";
 export type LocaleMode = "system" | Locale;
@@ -17,6 +18,7 @@ const localeStorageKey = "quelplan-locale-mode";
 
 const translations = {
   zh: {
+    ...addGameTranslations.zh,
     "common.language.system": "跟随系统",
     "common.language.zh": "中文",
     "common.language.en": "English",
@@ -208,6 +210,7 @@ const translations = {
     "toast.importByfenSuccess": "数据导入完成，正在刷新界面",
   },
   en: {
+    ...addGameTranslations.en,
     "common.language.system": "Use system",
     "common.language.zh": "Chinese",
     "common.language.en": "English",

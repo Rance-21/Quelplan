@@ -21,13 +21,12 @@ const loadInitialFolderGames =
   createRetryableFolderGamesLoader(getFolderGames);
 const windowAnimationDuration = 200;
 
-export type FolderWindow = "add" | "sort";
+export type FolderWindow = "sort";
 
 export function useFolderState(enabled: boolean) {
   const [games, setGames] = useState<FolderGame[]>([]);
   const [activeWindow, setActiveWindow] = useState<FolderWindow | null>(null);
   const [isFolderWindowClosing, setIsFolderWindowClosing] = useState(false);
-  const [isAddFlowActive, setIsAddFlowActive] = useState(false);
   const closeWindowTimerRef = useRef<number | null>(null);
   const hasLoadedGamesRef = useRef(false);
   const {
@@ -59,11 +58,6 @@ export function useFolderState(enabled: boolean) {
     setGames((currentGames) => {
       return currentGames.filter((game) => game.id !== id);
     });
-  }, []);
-
-  const handleOpenAddWindow = useCallback(() => {
-    setActiveWindow("add");
-    setIsFolderWindowClosing(false);
   }, []);
 
   const handleOpenSortWindow = useCallback(() => {
@@ -169,14 +163,11 @@ export function useFolderState(enabled: boolean) {
     handleSearchSubmit,
     activeWindow,
     isFolderWindowClosing,
-    isAddFlowActive,
     handleSortChange,
     handleGameDelete,
-    handleOpenAddWindow,
     handleOpenSortWindow,
     handleCloseFolderWindow,
     handleGamesCommitted,
-    handleAddFlowActiveChange: setIsAddFlowActive,
     handleGameAdded: handleGameAdd,
     handleFolderGameUpdated,
   };

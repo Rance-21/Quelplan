@@ -2,6 +2,7 @@ import { useLayoutEffect, useState, RefObject } from "react";
 
 export interface FolderGridLayout {
   columns: number;
+  rootFontSize: number;
   cardHeight: number;
   rowStride: number;
 }
@@ -10,7 +11,7 @@ export function calculateFolderGridLayout(
   contentWidth: number,
   rootFontSize: number = 16,
   cardWidthRem: number = 10,
-  gapRem: number = 1.5,
+  gapRem: number = 2.25,
 ): FolderGridLayout {
   const safeContentWidth = Math.max(0, contentWidth);
   const safeRootFontSize = rootFontSize > 0 ? rootFontSize : 16;
@@ -29,6 +30,7 @@ export function calculateFolderGridLayout(
 
   return {
     columns,
+    rootFontSize: safeRootFontSize,
     cardHeight,
     rowStride: cardHeight + gapPx,
   };
@@ -37,7 +39,7 @@ export function calculateFolderGridLayout(
 export function useFolderGrid(
   containerRef: RefObject<HTMLDivElement | null>,
   cardWidthRem: number = 10,
-  gapRem: number = 1.5,
+  gapRem: number = 2.25,
 ) {
   const [layout, setLayout] = useState<FolderGridLayout | null>(null);
 
@@ -58,6 +60,7 @@ export function useFolderGrid(
       setLayout((currentLayout) => {
         if (
           currentLayout?.columns === nextLayout.columns &&
+          currentLayout.rootFontSize === nextLayout.rootFontSize &&
           currentLayout.cardHeight === nextLayout.cardHeight &&
           currentLayout.rowStride === nextLayout.rowStride
         ) {

@@ -2,10 +2,10 @@ import { Plus } from "lucide-react";
 import { useI18n } from "../../lib/i18n";
 
 interface AddButtonProps {
-  onOpenAddWindow: () => void;
+  onAddGames: () => void;
 }
 
-export function AddButton({ onOpenAddWindow }: AddButtonProps) {
+export function AddButton({ onAddGames }: AddButtonProps) {
   const { t } = useI18n();
 
   return (
@@ -15,7 +15,7 @@ export function AddButton({ onOpenAddWindow }: AddButtonProps) {
     >
       <button
         type="button"
-        onClick={onOpenAddWindow}
+        onClick={onAddGames}
         title={t("add.button.game")}
         aria-label={t("add.button.game")}
         className="s-btn qp-action-icon-button"
@@ -32,7 +32,7 @@ export function AddButton({ onOpenAddWindow }: AddButtonProps) {
         }}
       >
         <Plus
-          size={16}
+          size="1rem"
           style={{ marginRight: "0.25rem", color: "var(--qp-text)" }}
         />
       </button>

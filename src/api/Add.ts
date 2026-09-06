@@ -1,6 +1,4 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { dismissToast, showToast } from "../components/ui/Toast";
-import { translate } from "../lib/i18n";
 import type { FolderGame } from "./foldergames";
 import { invokeApi, withApiErrorToast } from "./invoke";
 
@@ -28,7 +26,7 @@ export interface SearchedGame {
 
 export interface SearchResult {
   path: string;
-  searched_games: [SearchedGame, ...SearchedGame[]];
+  searched_games: SearchedGame[];
 }
 
 export type SearchSelection = [outsideIndex: number, insideIndex: number];
@@ -50,20 +48,11 @@ export async function addNewGame(
   sourceMask: number,
   name: string | null = null,
 ): Promise<SearchResult> {
-  const loadingToastId = showToast(
-    translate("toast.searchGamesLoading"),
-    "loading",
-  );
-
-  try {
-    return await invokeApi<SearchResult>("add_new_game", {
-      path: gamePath,
-      name,
-      source_mask: sourceMask,
-    });
-  } finally {
-    dismissToast(loadingToastId);
-  }
+  return invokeApi<SearchResult>("add_new_game", {
+    path: gamePath,
+    name,
+    source_mask: sourceMask,
+  });
 }
 
 export async function addNewGames(
@@ -71,11 +60,6 @@ export async function addNewGames(
   sourceMask: number,
   onSearchResult: (result: SearchResult) => void,
 ): Promise<number> {
-  const loadingToastId = showToast(
-    translate("toast.searchGamesLoading"),
-    "loading",
-  );
-
   let unlisten: (() => void) | undefined;
   let resultCount = 0;
 
@@ -98,33 +82,18 @@ export async function addNewGames(
     return resultCount;
   } finally {
     unlisten?.();
-    dismissToast(loadingToastId);
   }
 }
 
 export async function addGamesToDb(
   selections: SearchSelection[],
 ): Promise<void> {
-  const loadingToastId = showToast(
-    translate("toast.addGamesLoading"),
-    "loading",
-  );
-
-  try {
-    await invokeApi("add_games_to_db", { idxs: selections });
-  } finally {
-    dismissToast(loadingToastId);
-  }
+  await invokeApi("add_games_to_db", { idxs: selections });
 }
 
 export async function addSteamGames(
   onGameDiscovered: (game: FolderGame) => void,
 ): Promise<number> {
-  const loadingToastId = showToast(
-    translate("toast.addSteamGamesLoading"),
-    "loading",
-  );
-
   let unlisten: (() => void) | undefined;
   let addedCount = 0;
 
@@ -140,13 +109,8 @@ export async function addSteamGames(
     );
 
     await invokeApi("add_steam_games");
-    showToast(
-      translate("toast.addSteamGamesSuccess", { count: addedCount }),
-      "success",
-    );
     return addedCount;
   } finally {
     unlisten?.();
-    dismissToast(loadingToastId);
   }
 }

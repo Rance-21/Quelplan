@@ -1,4 +1,3 @@
-import { AddWindow } from "../../components/add_window/AddWindow";
 import type { MainGame } from "../../api/GetMainGame";
 import { AddButton } from "../../components/folder/AddButton";
 import { FolderGrid } from "../../components/folder/FolderGrid";
@@ -12,6 +11,7 @@ interface FolderPageProps {
   onGameDeleted: (id: number) => void;
   onGameSelectMain: (mainGame: MainGame) => void;
   onGameSelectDetail: (id: number) => void;
+  onAddGames: () => void;
 }
 
 export default function FolderPage({
@@ -19,6 +19,7 @@ export default function FolderPage({
   onGameDeleted,
   onGameSelectMain,
   onGameSelectDetail,
+  onAddGames,
 }: FolderPageProps) {
   const {
     presentedGames,
@@ -30,20 +31,12 @@ export default function FolderPage({
     activeWindow,
     isFolderWindowClosing,
     handleSortChange,
-    handleOpenAddWindow,
     handleOpenSortWindow,
-    handleCloseFolderWindow,
-    handleGameAdded,
-    handleGamesCommitted,
-    handleAddFlowActiveChange,
   } = folderState;
   const isWindowOpen = activeWindow !== null;
 
   return (
-    <div
-      className="qp-page-surface"
-      style={{ position: "absolute", inset: 0 }}
-    >
+    <div className="qp-page-surface" style={{ position: "absolute", inset: 0 }}>
       <div
         aria-hidden={isWindowOpen}
         inert={isWindowOpen}
@@ -59,7 +52,7 @@ export default function FolderPage({
         <div
           style={{
             position: "relative",
-            paddingLeft: "2rem",
+            paddingLeft: "2.5rem",
             flexDirection: "row",
             display: "flex",
             alignItems: "center",
@@ -75,7 +68,7 @@ export default function FolderPage({
             onSearch={handleSearchSubmit}
           />
           <SortButton onOpenSortWindow={handleOpenSortWindow} />
-          <AddButton onOpenAddWindow={handleOpenAddWindow} />
+          <AddButton onAddGames={onAddGames} />
         </div>
 
         <FolderGrid
@@ -86,23 +79,13 @@ export default function FolderPage({
         />
       </div>
 
-      {activeWindow === "add" && (
-        <div
-          style={{ position: "absolute", inset: "0 0 0 4.8rem", zIndex: 100000 }}
-        >
-          <AddWindow
-            onClose={handleCloseFolderWindow}
-            isClosing={isFolderWindowClosing}
-            onGamesCommitted={handleGamesCommitted}
-            onGameAdded={handleGameAdded}
-            onFlowActiveChange={handleAddFlowActiveChange}
-          />
-        </div>
-      )}
-
       {activeWindow === "sort" && (
         <div
-          style={{ position: "absolute", inset: "0 0 0 4.8rem", zIndex: 100000 }}
+          style={{
+            position: "absolute",
+            inset: "0 0 0 4.8rem",
+            zIndex: 100000,
+          }}
         >
           <SortWindow
             sortType={sortType}

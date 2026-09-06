@@ -19,9 +19,10 @@ export const FolderGrid = memo(function FolderGrid({
   onGameSelectDetail,
 }: FolderGridProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const gapRem = 1.5;
+  const gapRem = 2.25;
   const layout = useFolderGrid(scrollContainerRef, 10, gapRem);
   const columns = layout?.columns ?? null;
+  const rootFontSize = layout?.rootFontSize ?? 16;
   const rowCount = columns === null ? 0 : Math.ceil(games.length / columns);
   const itemWidth =
     columns === null
@@ -46,13 +47,13 @@ export const FolderGrid = memo(function FolderGrid({
       style={{
         flex: 1,
         overflowY: "auto",
-        padding: "2rem",
+        padding: "2.5rem",
         paddingTop: "1.5rem",
       }}
     >
       <div
         style={{
-          height: `${virtualizer.getTotalSize()}px`,
+          height: `${virtualizer.getTotalSize() / rootFontSize}rem`,
           width: "100%",
           position: "relative",
         }}
@@ -74,8 +75,8 @@ export const FolderGrid = memo(function FolderGrid({
                     top: 0,
                     left: leftPos,
                     width: itemWidth,
-                    height: `${layout?.cardHeight ?? virtualRow.size}px`,
-                    transform: `translateY(${virtualRow.start}px)`,
+                    height: `${(layout?.cardHeight ?? virtualRow.size) / rootFontSize}rem`,
+                    transform: `translateY(${virtualRow.start / rootFontSize}rem)`,
                   }}
                 >
                   <GameCard

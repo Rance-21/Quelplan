@@ -50,6 +50,17 @@ export const AppBackground = memo(function AppBackground({
             : undefined,
         }}
       />
+      {isFocusPage && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "var(--qp-focused-background-overlay)",
+            pointerEvents: "none",
+          }}
+        />
+      )}
     </div>
   );
 });

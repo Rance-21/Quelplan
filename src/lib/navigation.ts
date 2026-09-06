@@ -1,1 +1,1 @@
-export type AppPage = "Home" | "Folder" | "Settings" | "Detail";
+export type AppPage = "Home" | "Folder" | "Settings" | "Detail" | "Add";
