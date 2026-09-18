@@ -59,6 +59,7 @@ export default function DetailPage({ id, onFolderGameUpdate }: DetailPageProps) 
           </div>
 
           <div
+            className="qp-detail-summary"
             style={{
               minWidth: 0,
               display: "flex",

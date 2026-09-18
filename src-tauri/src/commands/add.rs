@@ -39,7 +39,11 @@ pub fn add_app(path: String, state: State<'_, AppState>) -> Result<u32, String> 
         .ok_or_else(|| "无法读取应用程序名称".to_string())?
         .to_string();
 
-    if path.contains("steamapps/common") {
+    // Scripts inside a Steam installation must run directly, not via a Steam URI.
+    let is_executable = Path::new(&path)
+        .extension()
+        .is_some_and(|extension| extension.eq_ignore_ascii_case("exe"));
+    if is_executable && path.contains("/steamapps/common/") {
         return add_steam_app(path, state, &name);
     }
 

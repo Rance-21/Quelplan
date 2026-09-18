@@ -60,3 +60,48 @@ pub fn launch_steam_app(steam_id: u32) -> Result<(), String> {
         Err(e) => Err(format!("无法唤醒 Steam 游戏, 错误: {}", e)),
     }
 }
+
+#[cfg(all(test, windows))]
+mod tests {
+    use super::*;
+    use std::fs;
+    use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+    #[test]
+    fn launches_batch_scripts_in_their_own_directory() {
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap()
+            .block_on(check_batch_scripts());
+    }
+
+    async fn check_batch_scripts() {
+        let unique = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let directory = std::env::temp_dir().join(format!(
+            "quelplan script 中文 & (test) {} {unique}",
+            std::process::id()
+        ));
+        fs::create_dir(&directory).unwrap();
+
+        for extension in ["cmd", "bat", "CMD", "BAT"] {
+            let script = directory.join(format!("launch tool.{extension}"));
+            let output = directory.join("result.txt");
+            fs::write(&script, b"@echo off\r\necho script-ok>result.txt\r\n").unwrap();
+            // add_app stores paths with forward slashes.
+            let path = script.to_string_lossy().replace('\\', "/");
+            let mut process = spawn_game(&path).await.expect("script should launch");
+            tokio::time::timeout(Duration::from_secs(10), process.wait_exit())
+                .await
+                .expect("script should finish");
+            assert_eq!(fs::read_to_string(&output).unwrap().trim(), "script-ok");
+            fs::remove_file(output).unwrap();
+            fs::remove_file(script).unwrap();
+        }
+
+        fs::remove_dir(directory).unwrap();
+    }
+}

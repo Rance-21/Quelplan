@@ -1,4 +1,4 @@
-import { AppWindow, Check, ChevronRight, FolderOpen, Gamepad2, HardDrive, Library, MonitorDown } from "lucide-react";
+import { AppWindow, Check, ChevronRight, FolderOpen, Gamepad2, HardDrive, Library, MonitorDown, Search } from "lucide-react";
 import type { AddGameFlow } from "../../hooks/useAddGameFlow";
 import type { AddMethod } from "../../lib/addGameFlow";
 import { getProgramName } from "../../lib/addGameFlow";
@@ -23,6 +23,7 @@ export function AddSetup({ flow }: { flow: AddGameFlow }) {
   const isSearch = flow.method === "single" || flow.method === "batch";
   const isBatch = flow.method === "batch";
   const isApp = flow.method === "app";
+  const startLabel = t(flow.method === "steam" ? "add.flow.steam.start" : isApp ? "add.button.app" : flow.sourceMask === 0 ? "add.flow.local.start" : "add.flow.search");
 
   return (
     <div className="qp-add-setup">
@@ -57,21 +58,33 @@ export function AddSetup({ flow }: { flow: AddGameFlow }) {
                 <span className="qp-add-file-icon">{isBatch ? <FolderOpen size="1.7rem" strokeWidth={1.4} /> : <AppWindow size="1.7rem" strokeWidth={1.4} />}</span>
                 <span className="qp-add-file-copy">
                   <strong>{flow.path ? getProgramName(flow.path) : t(isBatch ? "add.flow.chooseDirectory" : "add.flow.chooseProgram")}</strong>
-                  <span title={flow.path}>{flow.path || t(isBatch ? "add.flow.chooseDirectory.hint" : "add.flow.chooseProgram.hint")}</span>
+                  <span title={flow.path}>{flow.path || t(isBatch ? "add.flow.chooseDirectory.hint" : isApp ? "add.flow.chooseApp.hint" : "add.flow.chooseProgram.hint")}</span>
                 </span>
                 {flow.isPicking ? <span className="qp-add-muted">{t("add.flow.picking")}</span> : <ChevronRight size="1.1rem" />}
               </button>
               {flow.method === "single" && (
                 <div className="qp-add-name-field">
                   <label htmlFor="qp-add-game-name">{t("add.name.label")}</label>
-                  <input id="qp-add-game-name" className="qp-form-input" name="gameName" value={flow.name} disabled={flow.isWorking || !flow.path}
-                    onChange={event => flow.changeName(event.target.value)} placeholder={t("add.name.placeholder")} autoComplete="off" aria-describedby="qp-add-name-hint" />
+                  <div className="qp-add-name-input">
+                    <input id="qp-add-game-name" className="qp-form-input" name="gameName" value={flow.name} disabled={flow.isWorking || !flow.path}
+                      onChange={event => flow.changeName(event.target.value)} placeholder={t("add.name.placeholder")} autoComplete="off" aria-describedby="qp-add-name-hint" />
+                    <button type="submit" className="qp-add-button is-primary qp-add-name-submit" disabled={!flow.canStart} aria-label={startLabel} title={startLabel}>
+                      <Search size="1rem" aria-hidden="true" />
+                    </button>
+                  </div>
                   <small id="qp-add-name-hint">{t("add.name.description")}</small>
                 </div>
               )}
               {isBatch && <p className="qp-add-file-note">{t("add.flow.batch.note")}</p>}
               {isApp && <p className="qp-add-file-note">{t("add.flow.app.note")}</p>}
             </>
+          )}
+          {flow.method !== "single" && (
+            <div className="qp-add-setup-action">
+              <button type="submit" className="qp-add-button is-primary" disabled={!flow.canStart}>
+                {isSearch ? <Search size="1rem" aria-hidden="true" /> : <Check size="1rem" aria-hidden="true" />}{startLabel}
+              </button>
+            </div>
           )}
         </section>
 

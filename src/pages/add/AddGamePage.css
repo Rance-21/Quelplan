@@ -35,15 +35,6 @@
 .qp-add-header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-shrink: 0; }
 .qp-add-header h1 { font-size: 2rem; font-weight: 740; letter-spacing: -0.06rem; line-height: 1.15; }
 .qp-add-header p { margin-top: 0.45rem; font-size: 0.82rem; color: var(--qp-muted-text); line-height: 1.6; }
-.qp-add-steps { display: flex; list-style: none; align-items: center; gap: 1rem; padding: 0; margin: 0; }
-.qp-add-steps li { display: flex; align-items: center; gap: 0.4rem; color: var(--qp-muted-text); font-size: 0.75rem; white-space: nowrap; }
-.qp-add-steps li + li::before { content: ""; width: 1.3rem; margin-right: 0.2rem; border-top: 0.0625rem solid var(--qp-input-border); }
-.qp-add-steps li > span { width: 1.5rem; height: 1.5rem; display: grid; place-items: center; border-radius: 50%; border: 0.0625rem solid var(--qp-input-border); font-size: 0.72rem; }
-.qp-add-steps strong { font-weight: 500; }
-.qp-add-steps .is-current { color: var(--qp-text); }
-.qp-add-steps .is-current > span { background: var(--qp-primary-action-bg); border-color: transparent; color: var(--qp-primary-action-text); }
-.qp-add-steps .is-current strong { font-weight: 700; }
-.qp-add-steps .is-complete > span { background: var(--qp-panel-hover); color: var(--qp-text); }
 
 .qp-add-content { display: flex; flex: 1; min-height: 0; min-width: 0; }
 .qp-add-content.is-setup { overflow-y: auto; padding: 0.2rem; margin: -0.2rem; }
@@ -68,6 +59,9 @@
 .qp-add-file-copy > span { color: var(--qp-muted-text); font-size: 0.73rem; overflow-wrap: anywhere; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .qp-add-file-picker > svg { flex-shrink: 0; }
 .qp-add-name-field { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 1rem; font-size: 0.78rem; font-weight: 600; }
+.qp-add-name-input { display: flex; align-items: stretch; gap: 0.5rem; min-width: 0; }
+.qp-add-button.qp-add-name-submit { width: 2.75rem; flex: 0 0 2.75rem; padding: 0.65rem; }
+.qp-add-setup-action { display: flex; justify-content: flex-end; margin-top: 1rem; }
 .qp-add-name-field input { border-width: 0.0625rem; box-shadow: none; font-size: 0.88rem; background: var(--qp-input-bg); }
 .qp-add-name-field small { color: var(--qp-muted-text); font-size: 0.72rem; line-height: 1.5; font-weight: 400; }
 .qp-add-file-note { margin-top: 1rem !important; color: var(--qp-muted-text); font-size: 0.78rem; line-height: 1.75; }
@@ -151,8 +145,6 @@
 @keyframes qpAddSpin { to { transform: rotate(360deg); } }
 @media (max-width: 68rem) {
   .qp-add-page { padding-right: 1.5rem; padding-left: 6.3rem; }
-  .qp-add-steps { gap: 0.5rem; }
-  .qp-add-steps li + li::before { width: 0.7rem; }
   .qp-add-review { grid-template-columns: 13rem minmax(0, 1fr); }
   .qp-add-footer-hint { max-width: 12rem; }
 }

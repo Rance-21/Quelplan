@@ -1,11 +1,11 @@
 {
-  "version": "0.1.4",
-  "notes": "Quelplan v0.1.4",
+  "version": "0.1.6",
+  "notes": "Quelplan v0.1.6",
   "pub_date": "2026-07-21T10:00:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQ2pSQzBiQ3JmRC9Tb056L08wd3h5WVJZZjRQMVJNSU05VXdLbjA2QUZBOVczYlh6NldoTTVFS3dkWDFlTllSWTE1a3hTdks0VnlSVnEwck1jWlpISjVNd0F2ckJ3dnd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MjY1NzM4CWZpbGU6cXVlbHBsYW5fMC4xLjRfeDY0X2VuLVVTLm1zaQpZaWtYaURsQkxaazVabTgxdmVoUGNSejErQ0ZnVkk1aE5BSnIzdXhaM0NKWjBQTGQzcWlZN2hJQ1MyekloejVZMGt1SEFnSzVKcjVCS1R5b1pxV0FEZz09Cg==",
-      "url": "https://github.com/Rance-21/Quelplan/releases/download/v0.1.4/quelplan_0.1.4_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQ2pSQzBiQ3JmRDNhZFZZMnl3cFVnblYvOXAxY0FVMVdGZ3VtQ2NNRE5aMXlETFNOdVBmNWNXcEFTcEROZTI4SEdkbWkrWHBzcUE4YmZHNHpaT0U2ZVVFeWhhZ1FYVWdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg4NjYyOTg1CWZpbGU6cXVlbHBsYW5fMC4xLjVfeDY0X2VuLVVTLm1zaQpWSTR0R1ZIT2UvSmVqdzAwZ2JEVnlEOVlpTXY2WFZQVDRCbE91SUhvZ0tvQmhGM0dMQUNjaWhkWnFwMFFJLzczV29oWXZxZVlic1dKQ01UUUZhR1pDZz09Cg==",
+      "url": "https://github.com/Rance-21/Quelplan/releases/download/v0.1.5/quelplan_0.1.5_x64_en-US.msi"
     }
   }
 }

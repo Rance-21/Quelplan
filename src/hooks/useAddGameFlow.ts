@@ -91,7 +91,7 @@ export function useAddGameFlow({
         ? await selectDirectory()
         : await selectSingleFile({
             filterName: t(method === "app" ? "add.fileFilter.app" : "add.fileFilter.game"),
-            extensions: ["exe"],
+            extensions: method === "app" ? ["exe", "cmd", "bat"] : ["exe"],
           });
       if (!nextPath) return;
       setPaths((current) => ({ ...current, [method]: nextPath }));
