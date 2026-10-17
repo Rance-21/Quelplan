@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { DailyPlayTime } from "../../api/detailgame";
 import { useI18n, type Locale } from "../../lib/i18n";
+import { getPlayTimeSlots } from "../../utils/PlayTime";
 import { DetailRow } from "./DetailRow";
 
 const dateLocales: Record<Locale, string> = {
@@ -14,25 +15,7 @@ interface PlayTimeChartProps {
 
 export function PlayTimeChart({ records }: PlayTimeChartProps) {
   const { locale, t } = useI18n();
-  const slots = useMemo<(DailyPlayTime | null)[]>(() => {
-    const visibleRecords = records
-      .filter(
-        (record) =>
-          Number.isFinite(record.play_date) &&
-          record.play_date > 0 &&
-          Number.isFinite(record.play_time) &&
-          record.play_time >= 0,
-      )
-      .sort((firstRecord, secondRecord) => {
-        return firstRecord.play_date - secondRecord.play_date;
-      })
-      .slice(-7);
-
-    return [
-      ...Array<DailyPlayTime | null>(7 - visibleRecords.length).fill(null),
-      ...visibleRecords,
-    ];
-  }, [records]);
+  const slots = useMemo(() => getPlayTimeSlots(records), [records]);
 
   const maxPlayTime = Math.max(
     0,

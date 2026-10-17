@@ -1,3 +1,4 @@
+use crate::models::DailyPlayTime;
 use crate::services::game::*;
 use crate::services::launch::GameProcess;
 use crate::services::wal::{update_daily_play_time_wal, update_play_time_wal};
@@ -8,6 +9,38 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use sysinfo::System;
 use tauri::State;
 use tokio::task;
+
+#[derive(Clone, serde::Serialize)]
+pub struct PlayTimeUpdate {
+    pub id: u32,
+    pub play_time: u64,
+    pub daily_play_times: [DailyPlayTime; 7],
+}
+
+fn play_date(date: NaiveDate) -> u64 {
+    date.year() as u64 * 10000 + date.month() as u64 * 100 + date.day() as u64
+}
+
+fn save_play_time(
+    state: &State<'_, AppState>,
+    id: u32,
+    play_date: u64,
+    play_time: u64,
+) -> Result<PlayTimeUpdate, String> {
+    let mut gamedata = state.game_data.lock().map_err(|_| "无法锁定游戏数据")?;
+    let game = gamedata.games.get_mut(&id).ok_or("未找到游戏")?;
+    game.play_time += play_time;
+    update_daily_play_time(game, play_date, play_time);
+
+    update_daily_play_time_wal(state, id, play_date, play_time)?;
+    update_play_time_wal(state, id, play_time)?;
+
+    Ok(PlayTimeUpdate {
+        id,
+        play_time: game.play_time,
+        daily_play_times: game.daily_play_times,
+    })
+}
 
 pub fn date_string_to_u64(date_str: &str) -> Option<u64> {
     let naive_date = NaiveDate::parse_from_str(date_str, "%Y-%m-%d").ok()?;
@@ -36,25 +69,14 @@ pub async fn record_play_time(
     child: &mut GameProcess,
     id: u32,
     state: State<'_, AppState>,
-) -> Result<(), String> {
-    let started_at = Local::now();
+) -> Result<PlayTimeUpdate, String> {
+    // 整场会话归入本地启动日期，包括跨午夜后继续游玩的时间。
+    let play_date = play_date(Local::now().date_naive());
     let start_time = Instant::now();
-    let _status = child.wait_exit().await;
+    child.wait_exit().await?;
     let play_time = start_time.elapsed().as_secs();
 
-    let mut gamedata = state.game_data.lock().unwrap();
-    let game = gamedata.games.get_mut(&id).ok_or("未找到游戏")?;
-    game.play_time += play_time;
-
-    let play_date: u64 = (started_at.year() as u64 * 10000)
-        + (started_at.month() as u64 * 100)
-        + (started_at.day() as u64);
-    update_daily_play_time(game, play_date, play_time);
-
-    update_daily_play_time_wal(&state, id, play_date, play_time)?;
-    update_play_time_wal(&state, id, play_time)?;
-
-    Ok(())
+    save_play_time(&state, id, play_date, play_time)
 }
 
 pub fn parse_steam_date(date_str: &str) -> Option<u64> {
@@ -93,7 +115,7 @@ pub async fn record_steam_time(
     state: &State<'_, AppState>,
     exe_path: &str,
     id: u32,
-) -> Result<(), String> {
+) -> Result<PlayTimeUpdate, String> {
     let process_name = Path::new(exe_path)
         .file_name()
         .ok_or_else(|| format!("无法从 Steam 游戏路径中读取进程名: {}", exe_path))?
@@ -125,7 +147,7 @@ pub async fn record_steam_time(
             std::thread::sleep(Duration::from_secs(2));
         }
 
-        let started_at = Local::now();
+        let play_date = play_date(Local::now().date_naive());
         let start_time = Instant::now();
 
         loop {
@@ -142,22 +164,10 @@ pub async fn record_steam_time(
             }
         }
 
-        let play_date = (started_at.year() as u64 * 10000)
-            + (started_at.month() as u64 * 100)
-            + (started_at.day() as u64);
-
         Ok((play_date, start_time.elapsed().as_secs()))
     })
     .await
     .map_err(|e| format!("后台追踪线程崩溃: {}", e))??;
 
-    let mut gamedata = state.game_data.lock().unwrap();
-    let game = gamedata.games.get_mut(&id).ok_or("未找到游戏")?;
-    game.play_time += play_time;
-
-    update_daily_play_time(game, play_date, play_time);
-
-    update_daily_play_time_wal(&state, id, play_date, play_time)?;
-    update_play_time_wal(&state, id, play_time)?;
-    Ok(())
+    save_play_time(state, id, play_date, play_time)
 }

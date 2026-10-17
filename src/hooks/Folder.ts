@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { subscribeToPlayTimeUpdates } from "../api/PlayTimeEvents";
 import {
   type FolderGame,
   type FolderGamePatch,
@@ -125,6 +126,10 @@ export function useFolderState(enabled: boolean) {
       .then((latestGames) => setGames(latestGames))
       .catch(() => undefined);
   }, []);
+
+  useEffect(() => {
+    return subscribeToPlayTimeUpdates(handleGamesCommitted);
+  }, [handleGamesCommitted]);
 
   useEffect(() => {
     if (!enabled || hasLoadedGamesRef.current) return;

@@ -1,5 +1,6 @@
 use crate::db::engine::init_db;
 use crate::models::{Apps, Games, Settings, Tokens};
+use crate::services::launch_session::GameLaunches;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Mutex;
@@ -14,6 +15,7 @@ pub struct AppState {
     pub tokens: Mutex<Tokens>,
     pub settings: Mutex<Settings>,
     pub steam_import_mutex: AsyncMutex<()>,
+    pub game_launches: GameLaunches,
 }
 
 impl AppState {
@@ -48,6 +50,7 @@ impl AppState {
             tokens: Mutex::new(tokens),
             settings: Mutex::new(settings),
             steam_import_mutex: AsyncMutex::new(()),
+            game_launches: GameLaunches::default(),
         });
     }
 }

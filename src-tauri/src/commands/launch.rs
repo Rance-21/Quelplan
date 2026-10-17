@@ -1,9 +1,25 @@
 use crate::commands::game::update_game_field;
 use crate::services::launch::{launch_steam_app, spawn_game};
 use crate::state::AppState;
-use crate::utils::time::{get_current_timestamp, record_play_time, record_steam_time};
+use crate::utils::time::{
+    get_current_timestamp, record_play_time, record_steam_time, PlayTimeUpdate,
+};
 use device_query::{DeviceQuery, DeviceState, Keycode};
 use tauri::{AppHandle, Emitter, Manager};
+
+fn report_play_time(app: &AppHandle, result: Result<PlayTimeUpdate, String>) {
+    match result {
+        Ok(update) => {
+            let _ = app.emit("game-play-time-updated", update);
+        }
+        Err(error) => {
+            eprintln!("记录游戏时间失败: {}", error);
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.emit("toast-error", format!("记录游戏时间失败: {}", error));
+            }
+        }
+    }
+}
 
 #[tauri::command]
 pub async fn launch_game_chain(
@@ -11,6 +27,23 @@ pub async fn launch_game_chain(
     app: AppHandle,
     game_id: u32,
 ) -> Result<(), String> {
+    // Reserve before hiding the window or changing last_played so every entry
+    // point, including concurrent IPC requests, shares the same protection.
+    let launch = state.game_launches.acquire(game_id)?;
+    let (links, path) = {
+        let gamedata = state.game_data.lock().map_err(|_| "无法锁定游戏数据")?;
+        let game = gamedata.games.get(&game_id).ok_or("找不到游戏")?;
+        (game.link_exe.clone(), game.path.clone())
+    };
+    if path.is_empty()
+        || !links
+            .iter()
+            .take_while(|link| !link.path.is_empty())
+            .any(|link| link.path == path)
+    {
+        return Err("启动顺序中缺少游戏本体，请检查关联启动设置".to_string());
+    }
+
     let (hide_on_launch, launch_key_code) = {
         let settings = state
             .settings
@@ -24,18 +57,6 @@ pub async fn launch_game_chain(
         (settings.hide_on_launch, launch_key_code)
     };
 
-    if hide_on_launch {
-        if let Some(window) = app.get_webview_window("main") {
-            let _ = window.hide();
-        }
-    }
-
-    let gamedata = state.game_data.lock().unwrap();
-    let game = gamedata.games.get(&game_id).ok_or("找不到游戏")?;
-    let links = game.link_exe.clone();
-    let path = game.path.clone();
-    drop(gamedata);
-
     let last_played = get_current_timestamp();
     update_game_field(
         state,
@@ -44,16 +65,27 @@ pub async fn launch_game_chain(
         last_played.into(),
     )?;
 
+    if hide_on_launch {
+        if let Some(window) = app.get_webview_window("main") {
+            let _ = window.hide();
+        }
+    }
+
     let app_handle = app.clone();
 
     // 后台监听协程
     tokio::spawn(async move {
+        let mut game_task: Option<tokio::task::JoinHandle<()>> = None;
         let device_state = DeviceState::new();
         let mut current_index = 0;
         let mut key_was_pressed = false;
         let mut is_first: bool = true;
 
         while current_index < 3 {
+            // Stop a pending hotkey chain when its game exits or fails to start.
+            if game_task.as_ref().is_some_and(|task| task.is_finished()) {
+                break;
+            }
             let next_exe = &links[current_index];
 
             if next_exe.path.is_empty() {
@@ -67,42 +99,56 @@ pub async fn launch_game_chain(
                 is_first = false;
 
                 if next_exe.path == path {
+                    // A linked application may point at the game executable too.
+                    if game_task.is_some() {
+                        current_index += 1;
+                        key_was_pressed = is_pressed;
+                        continue;
+                    }
                     let app_handle_clone = app_handle.clone();
 
                     match next_exe.steam_id {
                         None => match spawn_game(&next_exe.path).await {
                             Ok(mut game_process) => {
-                                tokio::spawn(async move {
+                                let process_launch = launch.clone();
+                                game_task = Some(tokio::spawn(async move {
+                                    let _launch = process_launch;
                                     let background_state = app_handle_clone.state::<AppState>();
-                                    let _ = record_play_time(
+                                    let result = record_play_time(
                                         &mut game_process,
                                         game_id,
                                         background_state,
                                     )
                                     .await;
-                                });
+                                    report_play_time(&app_handle_clone, result);
+                                }));
                             }
                             Err(e) => {
                                 if let Some(window) = app_handle.get_webview_window("main") {
                                     let _ = window.emit("toast-error", e);
                                 }
+                                return;
                             }
                         },
                         Some(steam_id) => match launch_steam_app(steam_id) {
                             Ok(()) => {
                                 let exe_path = path.to_string();
 
-                                tokio::spawn(async move {
+                                let process_launch = launch.clone();
+                                game_task = Some(tokio::spawn(async move {
+                                    let _launch = process_launch;
                                     let background_state = app_handle_clone.state::<AppState>();
-                                    let _ =
+                                    let result =
                                         record_steam_time(&background_state, &exe_path, game_id)
                                             .await;
-                                });
+                                    report_play_time(&app_handle_clone, result);
+                                }));
                             }
                             Err(_) => {
                                 if let Some(window) = app_handle.get_webview_window("main") {
                                     let _ = window.emit("toast-error", "steam游戏启动失败");
                                 }
+                                return;
                             }
                         },
                     }
@@ -114,6 +160,7 @@ pub async fn launch_game_chain(
                                 if let Some(window) = app_handle.get_webview_window("main") {
                                     let _ = window.emit("toast-error", e);
                                 }
+                                return;
                             }
                         },
                         Some(steam_id) => {
@@ -123,6 +170,7 @@ pub async fn launch_game_chain(
                                     if let Some(window) = app_handle.get_webview_window("main") {
                                         let _ = window.emit("toast-error", "steam游戏启动失败");
                                     }
+                                    return;
                                 }
                             };
                         }

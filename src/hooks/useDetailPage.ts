@@ -4,6 +4,10 @@ import { getApps, type App as LinkedApp } from "../api/App";
 import { getGameDetail, type Game, type LinkExe } from "../api/detailgame";
 import type { FolderGamePatch } from "../api/foldergames";
 import {
+  subscribeToPlayTimeUpdates,
+  type PlayTimeUpdate,
+} from "../api/PlayTimeEvents";
+import {
   updateGameField,
   type DetailEditableField,
   type GameFieldValues,
@@ -43,6 +47,7 @@ export function useDetailPage({
   useEffect(() => {
     let disposed = false;
     const generation = ++detailGenerationRef.current;
+    let latestPlayTime: PlayTimeUpdate | null = null;
 
     setGame(null);
     pendingRequestsRef.current = createPendingRequests();
@@ -50,10 +55,26 @@ export function useDetailPage({
       current.liked || current.if_finished ? createPendingFields() : current,
     );
 
+    const unsubscribe = subscribeToPlayTimeUpdates((update) => {
+      if (update.id !== id) return;
+      if (latestPlayTime && update.play_time < latestPlayTime.play_time) return;
+      latestPlayTime = update;
+      setGame((current) =>
+        current?.id === id && update.play_time >= current.play_time
+          ? { ...current, ...update }
+          : current,
+      );
+    });
+
     void getGameDetail(id)
       .then((gameData) => {
         if (disposed || detailGenerationRef.current !== generation) return;
-        setGame(gameData);
+        // A session can finish while the initial detail request is in flight.
+        setGame(
+          latestPlayTime && latestPlayTime.play_time >= gameData.play_time
+            ? { ...gameData, ...latestPlayTime }
+            : gameData,
+        );
       })
       .catch(() => {
         if (disposed || detailGenerationRef.current !== generation) return;
@@ -61,6 +82,7 @@ export function useDetailPage({
 
     return () => {
       disposed = true;
+      unsubscribe();
     };
   }, [id]);
 
