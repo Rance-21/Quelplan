@@ -379,10 +379,42 @@ button.qp-expanded-row:hover:not(:disabled) {
   transform: translateY(-50%) scale(1);
 }
 
+.qp-sort-panel {
+  width: min(84%, 34rem);
+  margin: auto;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.qp-sort-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.qp-sort-divider {
+  height: 1px;
+  background: var(--qp-panel-border);
+}
+
 .qp-sort-choice {
+  min-width: 0;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0 0.8rem;
   border: 1px solid var(--qp-input-border);
+  border-radius: 0.8rem;
   background: var(--qp-input-bg);
   color: var(--qp-muted-text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .qp-sort-choice:hover {

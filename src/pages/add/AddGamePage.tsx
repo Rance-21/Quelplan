@@ -16,7 +16,7 @@ export default function AddGamePage({ flow, onBack }: { flow: AddGameFlow; onBac
     <div className="qp-add-page qp-page-surface">
       <form className="qp-add-page-inner" onSubmit={event => { event.preventDefault(); if (setup) void flow.start(); else if (flow.phase === "review") void flow.confirm(); }}>
         <header className="qp-add-header">
-          <div><span className="qp-page-kicker">QUELPLAN / LIBRARY</span><h1>{t("add.flow.title")}</h1><p>{t("add.flow.description")}</p></div>
+          <h1>{t("add.flow.title")}</h1>
         </header>
 
         {flow.error && <div className="qp-add-error" role="alert"><CircleAlert size="1.15rem" /><span>{flow.error}</span></div>}

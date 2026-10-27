@@ -181,7 +181,12 @@ export default function App() {
               />
             )}
 
-            {currentPage === "Settings" && <SettingsPage />}
+            {currentPage === "Settings" && (
+              <SettingsPage
+                isCheckingForUpdates={appUpdater.isChecking}
+                onCheckForUpdates={appUpdater.checkForUpdates}
+              />
+            )}
 
             {currentPage === "Add" && (
               <AddGamePage flow={addFlow} onBack={() => void handlePageChange("Folder")} />

@@ -1,9 +1,10 @@
 import { SettingBar } from "../../components/setting/SettingBar";
 import { useSettingsRows } from "../../hooks/useSettingsRows";
 import { useI18n } from "../../lib/i18n";
+import type { SettingsUpdateControl } from "../../hooks/useSettingsRows";
 
-export default function SettingsPage() {
-  const settingGroups = useSettingsRows();
+export default function SettingsPage(props: SettingsUpdateControl) {
+  const settingGroups = useSettingsRows(props);
   const { t } = useI18n();
 
   return (

@@ -37,18 +37,14 @@ export function useFolderState(enabled: boolean) {
     handleSearchSubmit,
   } = useFolderSearch(games);
 
-  const [sortType, setSortType] = useState<SortType>(() => {
-    return readSortType(window.sessionStorage.getItem("sort_type"));
-  });
-
-  const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
-    return readSortOrder(window.sessionStorage.getItem("sort_order"));
-  });
+  const [{ sortType, sortOrder }, setSort] = useState(() => ({
+    sortType: readSortType(window.sessionStorage.getItem("sort_type")),
+    sortOrder: readSortOrder(window.sessionStorage.getItem("sort_order")),
+  }));
 
   const handleSortChange = useCallback(
     (newType: SortType, newOrder: SortOrder) => {
-      setSortType(newType);
-      setSortOrder(newOrder);
+      setSort({ sortType: newType, sortOrder: newOrder });
       window.sessionStorage.setItem("sort_type", newType);
       window.sessionStorage.setItem("sort_order", newOrder);
     },

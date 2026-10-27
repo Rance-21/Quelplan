@@ -13,8 +13,8 @@ export function SortButton({ onOpenSortWindow }: SortButtonProps) {
       <button
         type="button"
         onClick={onOpenSortWindow}
-        title={t("folder.sort.name")}
-        aria-label={t("folder.sort.name")}
+        title={t("folder.sort.title")}
+        aria-label={t("folder.sort.title")}
         className="qp-action-icon-button"
         style={{
           display: "flex",

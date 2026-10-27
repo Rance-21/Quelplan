@@ -1,12 +1,20 @@
 import type { FolderGame } from "../api/foldergames";
 
-export type SortType = "name" | "time" | "score";
+export const sortTypes = ["name", "time", "score", "id"] as const;
+export type SortType = (typeof sortTypes)[number];
 export type SortOrder = "asc" | "desc";
 
 const nameCollator = new Intl.Collator("zh-CN");
 
+const comparators: Record<SortType, (a: FolderGame, b: FolderGame) => number> = {
+  name: (a, b) => nameCollator.compare(a.name, b.name),
+  time: (a, b) => a.playtime - b.playtime,
+  score: (a, b) => a.score - b.score,
+  id: (a, b) => a.id - b.id,
+};
+
 export function readSortType(value: string | null): SortType {
-  return value === "time" || value === "score" ? value : "name";
+  return sortTypes.find((type) => type === value) ?? "name";
 }
 
 export function readSortOrder(value: string | null): SortOrder {
@@ -21,22 +29,6 @@ export function sortGames(
   if (games.length < 2) return games;
 
   const direction = order === "asc" ? 1 : -1;
-
-  return [...games].sort((firstGame, secondGame) => {
-    let comparison: number;
-
-    switch (type) {
-      case "time":
-        comparison = firstGame.playtime - secondGame.playtime;
-        break;
-      case "score":
-        comparison = firstGame.score - secondGame.score;
-        break;
-      case "name":
-        comparison = nameCollator.compare(firstGame.name, secondGame.name);
-        break;
-    }
-
-    return comparison * direction;
-  });
+  const compare = comparators[type];
+  return [...games].sort((a, b) => compare(a, b) * direction);
 }

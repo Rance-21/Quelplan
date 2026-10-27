@@ -42,10 +42,13 @@ export function useAppUpdater() {
     initialUpdateDownloadProgress,
   );
   const [isClosing, setIsClosing] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
   const updateRef = useRef<Update | null>(null);
   const hasDownloadedRef = useRef(false);
   const closeTimerRef = useRef<number | null>(null);
   const operationRunningRef = useRef(false);
+  const checkingRef = useRef(false);
+  const checkRequestRef = useRef(0);
 
   const updateInfo = useMemo<AppUpdateInfo | null>(() => {
     if (!update) return null;
@@ -175,34 +178,46 @@ export function useAppUpdater() {
     await restartApp();
   }, [phase, restartApp]);
 
-  useEffect(() => {
-    if (import.meta.env.DEV) return;
+  const checkForUpdates = useCallback(async (manual = true) => {
+    if (checkingRef.current || operationRunningRef.current || updateRef.current) return;
 
-    let disposed = false;
+    const request = ++checkRequestRef.current;
+    checkingRef.current = true;
+    setIsChecking(true);
 
-    void checkForAppUpdate()
-      .then((foundUpdate) => {
-        if (!foundUpdate) return;
-        if (disposed) {
-          releaseUpdate(foundUpdate);
-          return;
-        }
+    try {
+      const foundUpdate = await checkForAppUpdate();
+      if (request !== checkRequestRef.current) {
+        if (foundUpdate) releaseUpdate(foundUpdate);
+        return;
+      }
 
+      if (foundUpdate) {
         updateRef.current = foundUpdate;
         setUpdate(foundUpdate);
         setPhase("available");
-      })
-      .catch((error) => {
-        if (!disposed) showUpdaterError("update.toast.checkFailed", error);
-      });
-
-    return () => {
-      disposed = true;
-    };
+      } else if (manual) {
+        showToast(translate("update.toast.upToDate"), "success");
+      }
+    } catch (error) {
+      if (request === checkRequestRef.current) {
+        showUpdaterError("update.toast.checkFailed", error);
+      }
+    } finally {
+      if (request === checkRequestRef.current) {
+        checkingRef.current = false;
+        setIsChecking(false);
+      }
+    }
   }, [releaseUpdate]);
 
   useEffect(() => {
+    if (!import.meta.env.DEV) void checkForUpdates(false);
+
     return () => {
+      // Ignore stale responses after unmount, including StrictMode cleanup.
+      ++checkRequestRef.current;
+      checkingRef.current = false;
       clearCloseTimer();
       const currentUpdate = updateRef.current;
       updateRef.current = null;
@@ -210,7 +225,7 @@ export function useAppUpdater() {
         void closeAppUpdate(currentUpdate).catch(() => undefined);
       }
     };
-  }, [clearCloseTimer]);
+  }, [checkForUpdates, clearCloseTimer]);
 
   return {
     updateInfo,
@@ -219,6 +234,8 @@ export function useAppUpdater() {
     isOpen,
     isBusy,
     isClosing,
+    isChecking,
+    checkForUpdates,
     dismissUpdate,
     startUpdate,
   };

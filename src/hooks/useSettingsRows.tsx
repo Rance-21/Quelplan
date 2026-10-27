@@ -80,7 +80,15 @@ const byfenActions = {
   }
 >;
 
-export function useSettingsRows(): SettingGroup[] {
+export interface SettingsUpdateControl {
+  isCheckingForUpdates: boolean;
+  onCheckForUpdates: () => Promise<void>;
+}
+
+export function useSettingsRows({
+  isCheckingForUpdates,
+  onCheckForUpdates,
+}: SettingsUpdateControl): SettingGroup[] {
   const { mode, resolvedMode, setMode } = useTheme();
   const { localeMode, locale, setLocaleMode, t } = useI18n();
   const {
@@ -351,6 +359,19 @@ export function useSettingsRows(): SettingGroup[] {
   ];
 
   const aboutRows: SettingRow[] = [
+    {
+      id: "app-update",
+      title: t("settings.update.title"),
+      description: t("settings.update.description"),
+      content: (
+        <DataTransferButton
+          label={t(isCheckingForUpdates ? "settings.update.checking" : "settings.update.action")}
+          busy={isCheckingForUpdates}
+          disabled={isCheckingForUpdates}
+          onClick={() => void onCheckForUpdates()}
+        />
+      ),
+    },
     {
       id: "project-url",
       title: t("settings.project.title"),
